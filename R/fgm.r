@@ -55,7 +55,8 @@ estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist){
     var_sim <- var(w)
     return(list(mean        =  mean_sim ,
                 variance    =  var_sim, 
-                skew_median =  (3*(mean_sim - median(w)))/ sqrt(var_sim)))
+                skew_median =  (3*(mean_sim - median(w)))/ sqrt(var_sim)),
+                p_benifical = mean(w <0))
     
 }
 
