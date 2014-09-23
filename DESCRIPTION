@@ -1,0 +1,10 @@
+Package: dfe
+Title: Fit the  Distribution of Fitness Effects from new mutations
+Version: 0.1
+Authors@R: "David Winter <david.winter@gmail.com> [aut, cre]"
+Description: Provides functions to simulate, calculate likilihoods and fit
+models for the distribution of fitness effects arising from spontaneaous
+mutations.
+Depends: R (>= 3.1.1)
+License: MIT + file LICENSE
+LazyData: true
