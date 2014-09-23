@@ -48,3 +48,14 @@ sq_dist <- function(coords, optimum="origin"){
 }
 
 
+estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist){
+    sims <- replicate(n, mutate_FGM(start, Vm))
+    w <-  vapply(sims, FUN, 0.0) - FUN(start)
+    mean_sim <- mean(w)
+    var_sim <- var(w)
+    return(list(mean        =  mean_sim ,
+                variance    =  var_sim, 
+                skew_median =  (3*(mean_sim - median(w)))/ sqrt(var_sim)))
+    
+}
+
