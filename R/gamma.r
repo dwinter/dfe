@@ -54,7 +54,14 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
        stop(msg)
     }
     lower_bound <- c(s= 0, B=0, Ve=0, Ut=0)
-    Q <- function(s, B, Vc, Ut) -dma_gamma(obs, s, B, Vc, Ut,log=TRUE)
+    Q <- function(s, B, Vc, Ut){
+        if(verbose){
+            params <- match.call()
+            print (sapply(as.list(params)[2:5], round, 4))
+        }
+        -dma_gamma(obs, s, B, Vc, Ut,log=TRUE)
+    }
+      
     mle(Q, start=start, fixed=fixed,
         method="L-BFGS-B", 
         lower=rep(1e-6,length(start)))
