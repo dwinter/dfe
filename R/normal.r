@@ -83,7 +83,7 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
     all_args <- c("s", "Vs", "Ve", "Ut")
     known_args <- c( names(fixed), names(starts) )
     to_set <- all_args[!(all_args %in% known_args )]
-    if(length(to_set) > 1){
+    if(length(to_set) > 0){
         if(verbose){
             cat("Setting starting values for following variables at random:\n")
             cat(to_set, "\n")
