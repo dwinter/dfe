@@ -33,6 +33,65 @@ rma_gamma <- function(n, s,B, Ve, Ut){
     return(res)
 }
 
-moments_gamma <-function(s,B){
-    return(c(mean=s*B, var=s*B^2))
+##'@export
+dma_gamma <- function(w, s, B, Vc, Ut, log=FALSE){
+    res <- sum(vapply(w, .dma_gamma, s=s, Vc=Vc, B=B, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
+    if(log){
+        return(res)
+    }
+    return(exp(res))
 }
+
+
+
+##'@export
+fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
+    all_args <- c("s", "B", "Vc", "Ut")
+    known_args <- c( names(fixed), names(start) )  
+    if(!all(all_args %in% known_args)){
+       msg <- paste("Must set fixed or starting value for following params\n",
+                    known_args[!(all_args %in% known_args )])
+       stop(msg)
+    }
+    lower_bound <- c(s= 0, B=0, Ve=0, Ut=0)
+    Q <- function(s, B, Vc, Ut) -dma_gamma(obs, s, B, Vc, Ut,log=TRUE)
+    mle(Q, start=start, fixed=fixed,
+        method="L-BFGS-B", 
+        lower=rep(1e-6,length(start)))
+}
+
+
+
+.dma_gamma <- function(w, s,B,Vc,Ut, log=FALSE){
+    p_mu <- mu_scan(Ut)
+    n <- length(p_mu) -1
+    res <-  sum(sapply(0:n,  NG_convolution, z=w, s=s, B=B, Vc=Vc, verbose=FALSE) * p_mu)
+    if(log){
+        return(log(res))
+    }
+    return(res)
+}
+  
+
+
+moments_gamma <-function(s,B){
+    return(c(mean=s/B, var=s/(B^2)))
+}
+
+NG_convolution <- function(z, s, Beta, Vc, k, verbose=FALSE){
+    if(k==0){#gamma distr undefined
+        return( dnorm(z, 0, sqrt(Vc)) )
+    }
+    integrand <- function(x,y){
+        return(dnorm(y-x, 0, sqrt(Vc)) * dgamma(x, s*k, scale=Beta))
+    }
+    res <- integrate(integrand, z, lower= 0, upper=Inf)
+    if(verbose){
+        return(res)
+    }
+    else{
+        return(res$value)
+    }
+}
+
+
