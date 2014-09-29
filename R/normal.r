@@ -104,10 +104,12 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
        -dma_normal(obs, s, Vs, Ve, Ut, log=TRUE)
     }
     mle(Q, start=starts, fixed=fixed, 
-           method="L-BFGS-B", 
+#           method="L-BFGS-B", 
+
 #           lower=lower_bound[names(starts)])
-           lower=rep(0, 4),
-           upper=rep(Inf,4))
+#           lower=rep(0, 4),
+#           upper=rep(Inf,4))
+        )
 }
 
 
