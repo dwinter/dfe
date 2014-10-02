@@ -80,7 +80,7 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 }
   
 
-
+##' @export
 moments_gamma <-function(s,B){
     return(c(mean=s/B, var=s/(B^2)))
 }

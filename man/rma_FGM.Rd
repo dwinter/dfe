@@ -27,6 +27,6 @@ distribution is simulated as coming from Fisher's geometic model
 }
 \examples{
 set.seed(123)
-w <-
+w <- rma(FGM, c(0.04,-0.04), Vm=0.03, Ut=2)
 }
 

@@ -12,10 +12,11 @@
 ##'@param Ut numeric, expected number of mutations over the length of the
 ##' experiment
 ##'@return numeric, a vector of fitnesses
+##'@export
 ##'@examples
 ##' set.seed(123)
-##' w <- 
-
+##' w <- rma_FGM(100, c(0.04,-0.04),Ve=1e=4, Vm=0.003, Ut=2)
+##'
 
 
 rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
@@ -47,7 +48,7 @@ sq_dist <- function(coords, optimum="origin"){
     return(d**2)
 }
 
-
+##' @export
 estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist){
     sims <- replicate(n, mutate_FGM(start, Vm))
     w <-  vapply(sims, FUN, 0.0) - FUN(start)
@@ -55,8 +56,8 @@ estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist){
     var_sim <- var(w)
     return(list(mean        =  mean_sim ,
                 variance    =  var_sim, 
-                skew_median =  (3*(mean_sim - median(w)))/ sqrt(var_sim)),
-                p_benifical = mean(w <0))
+                skew_median =  (3*(mean_sim - median(w)))/ sqrt(var_sim),
+                p_benifical = mean(w <0)))
     
 }
 
