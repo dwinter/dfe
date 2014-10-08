@@ -49,11 +49,15 @@ sq_dist <- function(coords, optimum="origin"){
 }
 
 ##' @export
-estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist){
+estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist, plot=FALSE){
     sims <- replicate(n, mutate_FGM(start, Vm))
-    w <-  apply(sims, 1, FUN, 0.0) - FUN(start)
+    w <-  apply(sims, 2, FUN) - FUN(start)
     mean_sim <- mean(w)
     var_sim <- var(w)
+    if(plot){
+        plot(density(w))
+    }
+
     return(list(mean        =  mean_sim ,
                 variance    =  var_sim, 
                 skew_median =  (3*(mean_sim - median(w)))/ sqrt(var_sim),
