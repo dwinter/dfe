@@ -1,4 +1,4 @@
-##' Simulate fitness effects under fishers geometric model 
+## Simulate fitness effects under fishers geometric model 
 ##'
 ##' This function simulates fitness effects under a model in which the fitness
 ##' distribution is simulated as coming from Fisher's geometic model
@@ -32,7 +32,7 @@ rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
         }
     }
     new_positions <- vapply(k, mutate, FUN.VALUE=numeric(length(start)))
-    ending_fitnesses <- vapply(new_positions, FUN, 0.0) + experimental_variance
+    ending_fitnesses <- apply(new_positions, 2, FUN) + experimental_variance
     return( ending_fitnesses - starting_fitness)
 }
 
