@@ -28,16 +28,13 @@ rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
            return(start)
         }
         else{
-            return(rowSums(replicate(k, mutate_FGM(start, Vm))))
+            moves <- rowSums(replicate(k, rnorm(length(start), 0, sqrt(Vm))))
+            return(start + moves)
         }
     }
     new_positions <- vapply(k, mutate, FUN.VALUE=numeric(length(start)))
     ending_fitnesses <- apply(new_positions, 2, FUN) + experimental_variance
     return( ending_fitnesses - starting_fitness)
-}
-
-mutate_FGM <- function(coords, V){
-    coords + rnorm(length(coords), 0, sqrt(V))
 }
 
 sq_dist <- function(coords, optimum="origin"){
