@@ -47,7 +47,7 @@ sq_dist <- function(coords, optimum="origin"){
 
 ##' @export
 estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist, plot=FALSE){
-    sims <- replicate(n, mutate_FGM(start, Vm))
+    sims <- replicate(n, start + rnorm(length(start), 0, sqrt(Vm)))
     w <-  apply(sims, 2, FUN) - FUN(start)
     mean_sim <- mean(w)
     var_sim <- var(w)
