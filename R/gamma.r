@@ -8,7 +8,7 @@
 ##'
 ##'@export
 ##'@param n numeric, number of lines to simulate
-##'@param s numeric,  shape parameter for Gamma
+##'@param a numeric,  shape parameter for Gamma
 ##'@param B numeric, Scale paramater for Gamma
 ##'@param Ve numeric, envrionmental variance 
 ##'@param Ut numeric, expected number of mutations over the length of the
@@ -16,9 +16,9 @@
 ##'@return numeric, a vector of fitnesses
 ##'@examples
 ##' set.seed(123)
-##' w <- rma_normal(20, 0.1, 1 0.01, 1)
-
-rma_gamma <- function(n, s,B, Ve, Ut){
+##' w <- rma_gamma(20, 0.1, 2, 1e-4, 3)
+##' dma_gamma(w, 0.1, 2, 1e-4, 3)
+rma_gamma <- function(n, a,B, Ve, Ut){
     res <- numeric(n)
     k <- rpois(n, Ut)
     between_line <- rnorm(n,0,Ve)
@@ -27,15 +27,25 @@ rma_gamma <- function(n, s,B, Ve, Ut){
             res[i] <- between_line[i]
     }   
         else {
-            res[i] <- between_line[i] + sum(rgamma(k[i], shape=s,rate=B))
+            res[i] <- between_line[i] + sum(rgamma(k[i], shape=a,rate=B))
         }
     }
     return(res)
 }
 
+
+##' Calculate probability density of a set of fitness measures under a
+##' Normal-Gamma convolution model
+##'
+##'@param a numeric,  shape parameter for Gamma
+##'@param B numeric, Scale paramater for Gamma
+##'@param Ve numeric, envrionmental variance 
+##'@param Ut numeric, expected number of mutations over the length of the
 ##'@export
-dma_gamma <- function(w, s, B, Vc, Ut, log=FALSE){
-    res <- sum(vapply(w, .dma_gamma, s=s, Vc=Vc, B=B, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
+##'@examples
+##' dma_gamma( c(0.1,0.01), 0.05, 2, 1e-4, 2)
+dma_gamma <- function(w, a, B, Ve, Ut, log=FALSE){
+    res <- sum(vapply(w, .dma_gamma, a=a, Ve=Ve, B=B, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
     if(log){
         return(res)
     }
@@ -43,54 +53,70 @@ dma_gamma <- function(w, s, B, Vc, Ut, log=FALSE){
 }
 
 
-
+##'@param a numeric,  shape parameter for Gamma
+##'@param B numeric, Scale paramater for Gamma
+##'@param Ve numeric, envrionmental variance 
+##'@param Ut numeric, expected number of mutations over the length of the
+##'@param fixed a named list containing values for any of the above paramaters,
+##' that should be fixed during the maximum likelihood estimation
+##'@param start a named list contaning starting values for any of the above
+##' paramaters
+##' Note, all paramaters must be given either a fixed or a starting value
 ##'@export
+
 fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
-    all_args <- c("s", "B", "Vc", "Ut")
+    require(stats4)
+    all_args <- c("a", "B", "Ve", "Ut")
     known_args <- c( names(fixed), names(start) )  
     if(!all(all_args %in% known_args)){
        msg <- paste("Must set fixed or starting value for following params\n",
                     known_args[!(all_args %in% known_args )])
        stop(msg)
     }
-    lower_bound <- c(s= 0, B=0, Ve=0, Ut=0)
-    Q <- function(s, B, Vc, Ut){
+    lower_bound <- c(a= 0, B=0, Ve=0, Ut=0)
+    Q <- function(a, B, Ve, Ut){
         if(verbose){
             params <- match.call()
             print (sapply(as.list(params)[2:5], round, 4))
         }
-        -dma_gamma(obs, s, B, Vc, Ut,log=TRUE)
+        if(any( c(a, B, Ve, Ut) <= 0)){
+           return(999999)
+        }
+        -dma_gamma(obs, a, B, Ve, Ut,log=TRUE)
     }
       
-    mle(Q, start=start, fixed=fixed,
-        method="L-BFGS-B", 
-        lower=rep(1e-6,length(start)))
+    mle(Q, start=start, fixed=fixed)
+        #method="L-BFGS-B,
+        # ower=rep(1e-6,length(start)))
+        
 }
 
 
 
-.dma_gamma <- function(w, s,B,Vc,Ut, log=FALSE){
+.dma_gamma <- function(w, a,B,Ve,Ut, log=FALSE){
     p_mu <- mu_scan(Ut)
     n <- length(p_mu) -1
-    res <-  sum(sapply(0:n,  NG_convolution, z=w, s=s, B=B, Vc=Vc, verbose=FALSE) * p_mu)
+    res <-  sum(sapply(0:n,  NG_convolution, z=w, a=a, B=B, Ve=Ve, verbose=FALSE) * p_mu)
     if(log){
         return(log(res))
     }
     return(res)
 }
   
-
+##' Get mean and variance of a Gamma distribution given shape and rate
+##' paramaters
 ##' @export
-moments_gamma <-function(s,B){
-    return(c(mean=s/B, var=s/(B^2)))
+moments_gamma <-function(a,B){
+    return(c(mean=a/B, var=a/(B^2)))
 }
 
-NG_convolution <- function(z, s, Beta, Vc, k, verbose=FALSE){
+
+NG_convolution <- function(z, a, Beta, Ve, k, verbose=FALSE){
     if(k==0){#gamma distr undefined
-        return( dnorm(z, 0, sqrt(Vc)) )
+        return( dnorm(z, 0, sqrt(Ve)) )
     }
     integrand <- function(x,y){
-        return(dnorm(y-x, 0, sqrt(Vc)) * dgamma(x, s*k, scale=Beta))
+        return(dnorm(y-x, 0, sqrt(Ve)) * dgamma(x, shape=k*a, rate=Beta))
     }
     res <- integrate(integrand, z, lower= 0, upper=Inf)
     if(verbose){
