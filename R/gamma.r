@@ -118,7 +118,7 @@ NG_convolution <- function(z, a, Beta, Ve, k, verbose=FALSE){
     integrand <- function(x,y){
         return(dnorm(y-x, 0, sqrt(Ve)) * dgamma(x, shape=k*a, rate=Beta))
     }
-    res <- integrate(integrand, z, lower= .Machine$double.xmin, upper=Inf)
+    res <- integrate(integrand, z, lower= .Machine$double.xmin, upper=Inf,                     abs.tol=1e-7)
     if(verbose){
         return(res)
     }
