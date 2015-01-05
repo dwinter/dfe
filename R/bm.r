@@ -13,6 +13,6 @@
 BM <- function(obs, Ve){
     delta_m <- mean(obs)
     delta_v <- var(obs) - Ve
-    return(list(U=(2*delta_m^2)/delta_v, Ea = delta_v/delta_m))
+    return(list(U=(delta_m^2)/delta_v, Ea = delta_v/delta_m))
 }
 

@@ -73,6 +73,7 @@ rma_normal <- function(n, s, Vs, Ve, Ut){
 ##'@param verbose logical, be verbose
 ##'@return mle fit object
 ##'@examples
+##' set.seed(123)
 ##' w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
 ##' fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(s=0.01))
 
@@ -94,17 +95,21 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
     }
     lower_bound <- c(s=-Inf, Vs=1e-5, Vc=1e-5, Ut=1e-5)
     Q <- function(s, Vs, Ve, Ut){
-        if(verbose){
+       if(verbose){
             params <- match.call()
-            print (sapply(as.list(params)[2:5], round, 4))
+            to_print <- sapply(as.list(params)[2:5], round, 4)
        }
-        if(any(c(Vs,Ve,Ut) < 0)){
-            return(999999999)
-        }
-       -dma_normal(obs, s, Vs, Ve, Ut, log=TRUE)
+       if(any(c(Vs,Ve,Ut) < 0)){
+            return(.Machine$double.xmax)
+       }
+       res <- -dma_normal(obs, s, Vs, Ve, Ut, log=TRUE)
+       if(verbose){
+           print( c(to_print, "-LL"=round(res,2)))
+       }
+       res
     }
     mle(Q, start=starts, fixed=fixed, 
-#           method="L-BFGS-B", 
+#           method="BFGS", 
 
 #           lower=lower_bound[names(starts)])
 #           lower=rep(0, 4),
