@@ -1,10 +1,10 @@
-#Distributions of fitness effects 
+#Distributions of fitness effects
 
 This is a work-in-progress package, aiming to provide functions for users to
 fit existing and new models of the distribution of fitness effects from
 data arising from  mutation accumulation experiments
 
-As of Jan 2015, tverthing here is bleadingly alpha and will almost certainly
+As of Jan 2015, everything here is bleedingly alpha and will almost certainly
 change in the future. 
 
 ##Package design
@@ -23,7 +23,7 @@ rma_gamma()
 rma_FGM()
 ```
 
-`rma_FGM()` simulates mutations under a paramaterization of Fisher's Geometric Model (by default ditness is determined by the squared distance form the origin, user-defined fitness functions are allowed). 
+`rma_FGM()` simulates mutations under a paramaterization of Fisher's Geometric Model (by default fitness is determined by the squared distance form the origin, user-defined fitness functions are allowed). 
 
 ###Likelihood for observed data
 
