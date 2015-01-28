@@ -2,6 +2,7 @@
 
 using namespace Rcpp;
 
+// [[Rcpp::export]]
 double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
     //starting values for prob and res are for special case of k=0
     int n = obs.size();
@@ -33,6 +34,7 @@ double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, d
 
 
 
+// [[Rcpp::export]]
 NumericVector grad_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
     int n = obs.size();
     std::vector<double> dA (n, 0.0);
@@ -59,10 +61,11 @@ NumericVector grad_normal_cpp(std::vector<double> obs, double a, double Va, doub
         expected_fitness += a;
         for(size_t i = 0; i < n; i++){
             double A = obs[i] - expected_fitness ;
-            double B = exp(-Ut - (pow(A,2) / total_var) );
+            double B = exp(-Ut - ( pow(A,2) / (2* total_var) ) );
             dA[i] += (B * k * pow(Ut,k) * A) / (two_root_pi * pow(total_var,3/2) * kfac);
             dV[i] +=  ( (B * pow(k*Ut,k)) * pow(A,2) / (2*two_root_pi * pow(total_var, 5/2) * kfac) ) - ( (B * k * pow(Ut,k)) / (2*two_root_pi * pow(total_var, 3/2) * kfac) ); 
             dU[i] += ( (B * k * pow(Ut, k-1)) / (two_root_pi * sqrt(total_var) * kfac) ) - ( (B * pow(Ut, k)) / (two_root_pi * sqrt(total_var) * kfac) ); 
+            std::cout << k << '\t' << B << '\t' << expected_fitness << std::endl;
         }
         k += 1;
     }
