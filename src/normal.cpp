@@ -8,7 +8,7 @@ double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, d
     std::vector<double> res (n, 0.0);
     double running_prob = exp(-Ut);
     for(size_t i = 0; i< n; i++){
-        res.push_back( (exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve))) *  running_prob ) ;
+        res[0] = exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve))) *  running_prob  ;
     }
     uint64_t kfac = 1;
     uint16_t k= 1;
@@ -33,19 +33,33 @@ double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, d
 
 
 
-double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
+NumericVector dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
     int n = obs.size();
     std::vector<double> dA (n, 0.0);
     std::vector<double> dV (n, 0.0);
     std::vector<double> dU (n, 0.0);
     double running_prob = exp(-Ut);
-    
+    double total_var = Ve;
+    double two_root_pi = sqrt(2*M_PI);
+    double expected_fitness = 0;
     for(size_t i = 0; i< n; i++){
         //speciac case k = 0, solve in mathmatica
     }
     uint64_t kfac = 1;
-    uint16_t k= 0;
+    uint16_t k= 1;
     while(running_prob < 0.9999){      
+        kfac *= k;
+        double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
+        total_var += Va;
+        expected_fitness += a;
+        for(size_t i = 0; i < n; i++){
+            A = obs[i] - expected_fitness
+            B = exp(-Ut - (pow(A,2) / tvar) );
+            dA[i] += (B * k * pow(Ut,k) * A) / (two_root_pi * pow(total_var,3/2) * kfac)
+                
+
+    
+    }
 
 
 
