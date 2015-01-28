@@ -187,19 +187,20 @@ gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
    tvar <- k*Va +Ve
    kfac <- factorial(k)
    ##Only need this once per loop!
-   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
+#   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
    root_2_pi <- sqrt(2*pi)
    dA <- (B * k * Ut**k * A) / (root_2_pi * tvar**(3/2) * kfac)
 
-   dVa_left <- (B * k*U**k) / (2*root_2_pi * tvar**(3/2) * kfac)
-   dVa_right<- (B * k*U**k) * A**2 / (2*root_2_pi * tvar**(5/2) * kfac)
+   dVa_left <- (B * k*Ut**k) / (2*root_2_pi * tvar**(3/2) * kfac)
+   dVa_right<- (B * k*Ut**k) * A**2 / (2*root_2_pi * tvar**(5/2) * kfac)
    dVa<- (-dVa_left  + dVa_right)
 
    dUt_left  <- (B * k * Ut**(-1+k))/(root_2_pi * sqrt(tvar) * kfac)
-   dUt_right <- (B  * Ut**k)/(root_2_pi *sqrt(tvar) * kfac)
+   dUt_right <- (B  * Ut**k)/        (root_2_pi * sqrt(tvar) * kfac)
    dUt <- (dUt_left -  dUt_right)
    res <- c(dA, dVa, dUt)
-   res/divisor
+   res
+
 }
 
 
@@ -211,6 +212,11 @@ gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
 grad <- function(theta){
     res <- sapply(w, function(x) .grad(x, theta[1], theta[2], theta[3], Ve=1e-4))
     rowSums(res)
+}
+
+
+g <- function(w, Ve, U){
+    exp(-U - (w**2/(2*Ve))) / (sqrt(2*pi) * sqrt(Ve))
 }
 
 ###top/-exp(dma <- normal <- cpp(w, a, Va, Ve, Utog=TRUE)) 
