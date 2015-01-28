@@ -108,7 +108,6 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
        }
        res
     }
-    Q.gr  <- function(s, Vs
     mle(Q, start=starts, fixed=fixed, 
            method="L-BFGS-B", 
            lower=lower_bound[names(starts)],
@@ -118,8 +117,9 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
    )
 }
 
-
-#'@export
+#' @useDynLib dfe
+#' @importFrom Rcpp sourceCpp
+#' @export
 Rcpp::cppFunction('
 double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
     //starting values for prob and res are for special case of k=0
@@ -161,11 +161,57 @@ lazy_gr <- function(theta){
     g <- function(theta) f(theta[1], theta[2], theta[3])
     numDeriv::grad(g, theta)
 }
-    
+
+.grad_a <- function(w, a, Va, Ut){
+   max_k <- length( dfe:::mu_scan(Ut, tolerance=1e-4)  )
+sum(per_k(w, a, 0:max_k, Ut, Va, Ve=1e-4))
+}
+
+grad_a <- function(w, a, Va, Ut) sum(vapply(w, .grad_a, a=a, Va=Va, Ut=Ut, FUN.VALUE=0.0))
+
+A <- function(w,a,k) w - a*k
+
+B <- function(w, a, k, U, Va, Ve){
+    exp(-U - (A(w,a,k)**2/ (2*(k*Va+Ve) ))) 
+}
+per_k <- function(w, a, k, U, Va, Ve){
+   top <- B(w,a,k,U,Va,Ve) * k * U**k * A(w,a,k)
+   bottom <- sqrt(2*pi) * (k*Va+Ve)**(3/2) * factorial(k)
+   top / bottom
+}
+
+gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
+   #lots of resusable vars...
+   A <-  w - a*k
+   B <-   exp(-Ut - (A**2/ (2*(k*Va+Ve) ))) 
+   tvar <- k*Va +Ve
+   kfac <- factorial(k)
+   ##Only need this once per loop!
+   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
+   root_2_pi <- sqrt(2*pi)
+   dA <- (B * k * Ut**k * A) / (root_2_pi * tvar**(3/2) * kfac)
+
+   dVa_left <- (B * k*U**k) / (2*root_2_pi * tvar**(3/2) * kfac)
+   dVa_right<- (B * k*U**k) * A**2 / (2*root_2_pi * tvar**(5/2) * kfac)
+   dVa<- (-dVa_left  + dVa_right)
+
+   dUt_left  <- (B * k * Ut**(-1+k))/(root_2_pi * sqrt(tvar) * kfac)
+   dUt_right <- (B  * Ut**k)/(root_2_pi *sqrt(tvar) * kfac)
+   dUt <- (dUt_left -  dUt_right)
+   res <- c(dA, dVa, dUt)
+   res/divisor
+}
 
 
+.grad <- function(w, a, Va, Ut, Ve=1e-4){
+   max_k <- length( dfe:::mu_scan(Ut, tolerance=1e-4))
+   rowSums(sapply(1:max_k, function(x) gradient_k(x, w, a, Va, Ut, Ve)))
+}
 
+grad <- function(theta){
+    res <- sapply(w, function(x) .grad(x, theta[1], theta[2], theta[3], Ve=1e-4))
+    rowSums(res)
+}
 
-
-
-
+###top/-exp(dma <- normal <- cpp(w, a, Va, Ve, Utog=TRUE)) 
+###stats4::mle(f, start=list(a=a/2, Va=Va, Ut=4), gr=grad)   

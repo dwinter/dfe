@@ -9,5 +9,6 @@ Depends:
     R (>= 3.0)
 Imports:
     Rcpp
+LinkingTo: Rcpp
 License: MIT + file LICENSE
 LazyData: true
