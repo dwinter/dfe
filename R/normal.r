@@ -183,8 +183,9 @@ per_k <- function(w, a, k, U, Va, Ve){
 gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
    #lots of resusable vars...
    A <-  w - a*k
-   B <-   exp(-Ut - (A**2/ (2*(k*Va+Ve) ))) 
-   tvar <- k*Va +Ve
+   print(A)
+   B <-   exp(-Ut - (A**2/ (2*(k*Va+Ve) )))  
+   tvar <- k*Va +Ve                    # 
    kfac <- factorial(k)
    ##Only need this once per loop!
 #   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
@@ -206,7 +207,7 @@ gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
 
 .grad <- function(w, a, Va, Ut, Ve=1e-4){
    max_k <- length( dfe:::mu_scan(Ut, tolerance=1e-4))
-   rowSums(sapply(1:max_k, function(x) gradient_k(x, w, a, Va, Ut, Ve)))
+   rowSums(sapply(0:max_k, function(x) gradient_k(x, w, a, Va, Ut, Ve)))
 }
 
 grad <- function(theta){
