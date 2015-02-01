@@ -37,7 +37,6 @@ double dma_normal_cpp(NumericVector obs, double a, double Va, double Ve, double 
 // [[Rcpp::export]]
 NumericVector grad_normal_cpp(NumericVector obs, double a, double Va, double Ve, double Ut, bool log){ 
     int n = obs.size();
-    std::cout << n << std::endl;
     std::vector<double> dA (n, 0.0);
     std::vector<double> dV (n, 0.0);
     std::vector<double> dU (n, 0.0);
@@ -61,9 +60,10 @@ NumericVector grad_normal_cpp(NumericVector obs, double a, double Va, double Ve,
         for(size_t i = 0; i < n; i++){
             double A = obs[i] - expected_fitness ;
             double B = exp(-Ut - ( pow(A,2) / (2* total_var) ) );
-            dA[i] += (B * k * pow(Ut,k) * A) / (two_root_pi * pow(total_var,3/2 ) * kfac);
-            dV[i] +=  ( (B * pow(k*Ut,k)) * pow(A,2) / (2*two_root_pi * pow(total_var, 5/2) * kfac) ) - ( (B * k * pow(Ut,k)) / (2*two_root_pi * pow(total_var, 3/2) * kfac) ); 
+            dA[i] += (B * k * pow(Ut,k) * A) / (two_root_pi * pow(total_var,1.5 ) * kfac);
+            dV[i] +=  ( (B * pow(k*Ut,k)) * pow(A,2) / (2*two_root_pi * pow(total_var, 2.5) * kfac) ) - ( (B * k * pow(Ut,k)) / (2*two_root_pi * pow(total_var, 1.5) * kfac) ); 
             dU[i] += ( (B * k * pow(Ut, k-1)) / (two_root_pi * sqrt(total_var) * kfac) ) - ( (B * pow(Ut, k)) / (two_root_pi * sqrt(total_var) * kfac) ); 
+        std::cout <<  (B * k * pow(Ut,k) * A) / (two_root_pi * pow(total_var,1.5 ) * kfac) << std::endl;
         }
         k += 1;
     }
@@ -75,7 +75,6 @@ NumericVector grad_normal_cpp(NumericVector obs, double a, double Va, double Ve,
         res[0] += dA[i]/divisor;
         res[1] += dV[i]/divisor;
         res[2] += dU[i]/divisor;
-        std::cout << dA[i]/divisor << std::endl;
     }
     return(res);
 }

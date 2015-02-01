@@ -8,7 +8,9 @@ Description: Provides functions to simulate, calculate likilihoods and fit
 Depends:
     R (>= 3.0)
 Imports:
-    Rcpp
-LinkingTo: Rcpp
+    Rcpp,
+    RcppGSL
+LinkingTo: Rcpp, 
+           RcppGSL
 License: MIT + file LICENSE
 LazyData: true

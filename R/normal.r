@@ -118,10 +118,11 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
 }
 
 #' @useDynLib dfe
+#' @useDynLib gsl
 #' @importFrom Rcpp sourceCpp
 #' @export
 Rcpp::cppFunction('
-double dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
+double old_dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
     //starting values for prob and res are for special case of k=0
     int n = obs.size();
     std::vector<double> res (n, 0.0);
@@ -183,15 +184,14 @@ per_k <- function(w, a, k, U, Va, Ve){
 gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
    #lots of resusable vars...
    A <-  w - a*k
-   print(A)
    B <-   exp(-Ut - (A**2/ (2*(k*Va+Ve) )))  
    tvar <- k*Va +Ve                    # 
    kfac <- factorial(k)
    ##Only need this once per loop!
 #   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
-   root_2_pi <- sqrt(2*pi)
+   root_2_pi <- sqrt(2*pi)             # 
    dA <- (B * k * Ut**k * A) / (root_2_pi * tvar**(3/2) * kfac)
-
+    print( (root_2_pi * tvar**(3/2) * kfac))
    dVa_left <- (B * k*Ut**k) / (2*root_2_pi * tvar**(3/2) * kfac)
    dVa_right<- (B * k*Ut**k) * A**2 / (2*root_2_pi * tvar**(5/2) * kfac)
    dVa<- (-dVa_left  + dVa_right)
@@ -207,7 +207,7 @@ gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
 
 .grad <- function(w, a, Va, Ut, Ve=1e-4){
    max_k <- length( dfe:::mu_scan(Ut, tolerance=1e-4))
-   rowSums(sapply(0:max_k, function(x) gradient_k(x, w, a, Va, Ut, Ve)))
+   rowSums(sapply(1:max_k, function(x) gradient_k(x, w, a, Va, Ut, Ve)))
 }
 
 grad <- function(theta){
