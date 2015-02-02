@@ -51,7 +51,7 @@
 
 rma_normal <- function(n, a, Va, Ve, Ut){
     k <- rpois(n, Ut)
-    vapply(k, function(x) rnorm(1, x*a, sqrt((x*Va)+Ve)), FUN.VALUE=0)
+    rnorm(n, k*a, sqrt(k*Va+Ve))
 }
 
 ##' Find the maximum liklihood estimate of paramaters in MA model
