@@ -29,7 +29,7 @@ double integrand(double x, void * p){
 
 
 // [[Rcpp::export]]
-double dma_gamma_cpp (std::vector<double> obs, double a, double B, double Ve,  double Ut, bool log){
+double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve,  double Ut, bool log = true){
     double nobs = obs.size();
     int k = 1;
     double kfac = 1;
@@ -40,7 +40,7 @@ double dma_gamma_cpp (std::vector<double> obs, double a, double B, double Ve,  d
     for(size_t i = 0; i < nobs ; i++){
         // create a vector of integrands
         gsl_function F;
-        convolve_params p = {obs[i], Ve, a, B, &k};
+        convolve_params p = {obs[i], Ve, shape, rate, &k};
         param_vec[i] = p;
         F.function = &integrand;
         F.params = &param_vec[i];

@@ -6,20 +6,20 @@
 
 using namespace Rcpp;
 
-// dma_gamma_cpp
-double dma_gamma_cpp(std::vector<double> obs, double a, double B, double Ve, double Ut, bool log);
-RcppExport SEXP dfe_dma_gamma_cpp(SEXP obsSEXP, SEXP aSEXP, SEXP BSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
+// dma_gamma
+double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, double Ut, bool log = true);
+RcppExport SEXP dfe_dma_gamma(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
         Rcpp::traits::input_parameter< std::vector<double> >::type obs(obsSEXP );
-        Rcpp::traits::input_parameter< double >::type a(aSEXP );
-        Rcpp::traits::input_parameter< double >::type B(BSEXP );
+        Rcpp::traits::input_parameter< double >::type shape(shapeSEXP );
+        Rcpp::traits::input_parameter< double >::type rate(rateSEXP );
         Rcpp::traits::input_parameter< double >::type Ve(VeSEXP );
         Rcpp::traits::input_parameter< double >::type Ut(UtSEXP );
         Rcpp::traits::input_parameter< bool >::type log(logSEXP );
-        double __result = dma_gamma_cpp(obs, a, B, Ve, Ut, log);
+        double __result = dma_gamma(obs, shape, rate, Ve, Ut, log);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

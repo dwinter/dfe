@@ -18,10 +18,10 @@
 ##' set.seed(123)
 ##' w <- rma_gamma(20, 0.1, 2, 1e-4, 3)
 ##' dma_gamma(w, 0.1, 2, 1e-4, 3)
-rma_gamma <- function(n, a,B, Ve, Ut){
+rma_gamma <- function(n, shape,rate, Ve, Ut){
     k <- rpois(n, Ut)
     between_line <- rnorm(n,0,sqrt(Ve))
-    between_line +  rgamma(n, k*a, B)
+    between_line +  rgamma(n, k*shape, rate)
 }
 
 
@@ -35,13 +35,13 @@ rma_gamma <- function(n, a,B, Ve, Ut){
 ##'@export
 ##'@examples
 ##' dma_gamma( c(0.1,0.01), 0.05, 2, 1e-4, 2)
-dma_gamma <- function(w, a, B, Ve, Ut, log=FALSE){
-    res <- sum(vapply(w, .dma_gamma, a=a, Ve=Ve, B=B, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
-    if(log){
-        return(res)
-    }
-    return(exp(res))
-}
+##dma_gamma <- function(w, a, B, Ve, Ut, log=FALSE){
+##    res <- sum(vapply(w, .dma_gamma, a=a, Ve=Ve, B=B, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
+##    if(log){
+##        return(res)
+##    }
+##    return(exp(res))
+##}
 
 
 ##'@param a numeric,  shape parameter for Gamma
@@ -84,15 +84,15 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 
 
 
-.dma_gamma <- function(w, a,B,Ve,Ut, log=FALSE){
-    p_mu <- mu_scan(Ut)
-    n <- length(p_mu) -1
-    res <-  sum(sapply(0:n,  NG_convolution, z=w, a=a, B=B, Ve=Ve, verbose=FALSE) * p_mu)
-    if(log){
-        return(log(res))
-    }
-    return(res)
-}
+##.dma_gamma <- function(w, a,B,Ve,Ut, log=FALSE){
+##    p_mu <- mu_scan(Ut)
+##    n <- length(p_mu) -1
+##    res <-  sum(sapply(0:n,  NG_convolution, z=w, a=a, B=B, Ve=Ve, verbose=FALSE) * p_mu)
+##    if(log){
+##        return(log(res))
+##    }
+##    return(res)
+##}
   
 ##' Get mean and variance of a Gamma distribution given shape and rate
 ##' paramaters
