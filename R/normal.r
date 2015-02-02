@@ -1,15 +1,4 @@
 
-.dma_normal <- function(obs, s, Vs, Ve, Ut, log=FALSE){
-    p_mu <- mu_scan(Ut)
-    n <- length(p_mu) -1 
-    res <- sum(dnorm(obs, (0:n)*s, sqrt( ((0:n)*Vs) + Ve)) * p_mu)
-    if(log){
-        return(log(res))
-    }
-    return(res)
-}
-
-
 ##' Calculate log-likilhood for a single observation given 
 ##'
 ##' This function calculate the liklihood of a given observed fitness under
@@ -17,8 +6,8 @@
 ##'
 ##'@export
 ##'@param obs numeric, a single observed fitness from a an MA lne
-##'@param s numeric,  mean fitness of mutations
-##'@param Vs numeric, variance in fitness of mutations
+##'@param a numeric,  mean fitness of mutations
+##'@param Va numeric, variance in fitness of mutations
 ##'@param Ve numeric, envrionmental variance 
 ##'@param Ut numeric, expected number of mutations over the length of the
 ##' experiment
@@ -31,13 +20,13 @@
 
 
 
-dma_normal <- function(obs, s, Vs, Ve, Ut, log=FALSE){
-    res <- sum(vapply(obs, .dma_normal, s=s, Vs=Vs, Ve=Ve, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
-    if(!log){
-       return(exp(res))
-    }
-    res
-}
+#dma_normal <- function(obs, s, Vs, Ve, Ut, log=FALSE){
+#    res <- sum(vapply(obs, .dma_normal, s=s, Vs=Vs, Ve=Ve, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
+#    if(!log){
+#       return(exp(res))
+#    }
+#    res
+#}
 
 
 ##' Simulate fitness effects under of normal model 
@@ -60,9 +49,9 @@ dma_normal <- function(obs, s, Vs, Ve, Ut, log=FALSE){
 ##' dma_normal(w, 0.1, 0.01,0.01, 3)
 
 
-rma_normal <- function(n, s, Vs, Ve, Ut){
+rma_normal <- function(n, a, Va, Ve, Ut){
     k <- rpois(n, Ut)
-    vapply(k, function(x) rnorm(1, x*s, sqrt((x*Vs)+Ve)), FUN.VALUE=0)
+    vapply(k, function(x) rnorm(1, x*a, sqrt((x*Va)+Ve)), FUN.VALUE=0)
 }
 
 ##' Find the maximum liklihood estimate of paramaters in MA model
@@ -102,27 +91,17 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
        if(any(c(Vs,Ve,Ut) < 0)){
             return(.Machine$double.xmax)
        }
-       res <- -dma_normal(obs, s, Vs, Ve, Ut, log=TRUE)
+       res <- -dma_normal_cpp(obs, s, Vs, Ve, Ut, log=TRUE)
        if(verbose){
            print( c(to_print, "-LL"=round(res,2)))
        }
        res
     }
     mle(Q, start=starts, fixed=fixed, 
-#           method="BFGS", 
-
-#           lower=lower_bound[names(starts)])
-#           lower=rep(0, 4),
-#           upper=rep(Inf,4))
-        )
+           method="L-BFGS-B", 
+           lower=lower_bound[names(starts)],
+           gr= function(s, Vs, Ve, Ut) numDeriv::grad(Q, c(s=s, Vs=Vs, Ve=Ve, Ut=Ut))
+  #         lower=rep(0, 4),
+   #        upper=rep(Inf,4))
+   )
 }
-
-
-
-
-
-
-
-
-
-
