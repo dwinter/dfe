@@ -35,7 +35,7 @@ double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, 
 
 
 // [[Rcpp::export]]
-NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool){ 
+NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, double Ut){ 
     int n = obs.size();
     std::vector<double> dA (n, 0.0);
     std::vector<double> dV (n, 0.0);
@@ -71,7 +71,7 @@ NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, dou
 
     double divisor = 0;
     for(size_t i = 0; i < n; i++){
-        divisor = -dma_normal_cpp(obs, a, Va, Ve, Ut, false);
+        divisor = -dma_normal(obs, a, Va, Ve, Ut,false);
         res[0] += dA[i]/divisor;
         res[1] += dV[i]/divisor;
         res[2] += dU[i]/divisor;
