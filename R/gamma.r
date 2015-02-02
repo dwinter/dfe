@@ -57,23 +57,23 @@ rma_gamma <- function(n, shape,rate, Ve, Ut){
 
 fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
     require(stats4)
-    all_args <- c("a", "B", "Ve", "Ut")
+    all_args <- c("shape", "rate", "Ve", "Ut")
     known_args <- c( names(fixed), names(start) )  
     if(!all(all_args %in% known_args)){
        msg <- paste("Must set fixed or starting value for following params\n",
-                    known_args[!(all_args %in% known_args )])
+                    all_args[!(all_args %in% known_args )])
        stop(msg)
     }
-    lower_bound <- c(a= 0, B=0, Ve=0, Ut=0)
-    Q <- function(a, B, Ve, Ut){
+    lower_bound <- c(shape= 0, rate=0, Ve=0, Ut=0)
+    Q <- function(shape, rate, Ve, Ut){
         if(verbose){
             params <- match.call()
             print (sapply(as.list(params)[2:5], round, 4))
         }
-        if(any( c(a, B, Ve, Ut) <= 0)){
+        if(any( c(shape, rate, Ve, Ut) <= 0)){
            return(999999)
         }
-        -dma_gamma(obs, a, B, Ve, Ut,log=TRUE)
+        -dma_gamma(obs, shape, rate, Ve, Ut,log=TRUE)
     }
       
     mle(Q, start=start, fixed=fixed)

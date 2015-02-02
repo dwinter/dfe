@@ -70,9 +70,10 @@ rma_normal <- function(n, a, Va, Ve, Ut){
 fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
     require(stats4)
     #Start by dealing with set/known/fixed arguments
-    all_args <- c("s", "Vs", "Ve", "Ut")
+    all_args <- c("a", "Va", "Ve", "Ut")
     known_args <- c( names(fixed), names(starts) )
     to_set <- all_args[!(all_args %in% known_args )]
+    ##TODO BETTER STARTING VALUES
     if(length(to_set) > 0){
         if(verbose){
             cat("Setting starting values for following variables at random:\n")
@@ -82,25 +83,26 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
         names(random_starts) <- to_set
         starts <- c(starts, random_starts)
     }
-    lower_bound <- c(s=-Inf, Vs=1e-5, Vc=1e-5, Ut=1e-5)
-    Q <- function(s, Vs, Ve, Ut){
+    lower_bound <- c(a=-Inf, Va=1e-5, Ve=1e-5, Ut=1e-5)
+    Q <- function(a, Va, Ve, Ut){
        if(verbose){
             params <- match.call()
             to_print <- sapply(as.list(params)[2:5], round, 4)
        }
-       if(any(c(Vs,Ve,Ut) < 0)){
+       if(any(c(Va,Ve,Ut) < 0)){
             return(.Machine$double.xmax)
        }
-       res <- -dma_normal_cpp(obs, s, Vs, Ve, Ut, log=TRUE)
+       res <- -dma_normal(obs, a, Va, Ve, Ut, log=TRUE)
        if(verbose){
            print( c(to_print, "-LL"=round(res,2)))
        }
        res
     }
     mle(Q, start=starts, fixed=fixed, 
-           method="L-BFGS-B", 
-           lower=lower_bound[names(starts)],
-           gr= function(s, Vs, Ve, Ut) numDeriv::grad(Q, c(s=s, Vs=Vs, Ve=Ve, Ut=Ut))
+#           method="CG", 
+#           lower=lower_bound[names(starts)],
+           gr= function(par) grad_normal(obs=obs, a=par[1], Va=par[2], Ut=par[3], Ve=fixed$Ve)
+#            gr = function(par) print(par)
   #         lower=rep(0, 4),
    #        upper=rep(Inf,4))
    )
