@@ -19,18 +19,9 @@
 ##' w <- rma_gamma(20, 0.1, 2, 1e-4, 3)
 ##' dma_gamma(w, 0.1, 2, 1e-4, 3)
 rma_gamma <- function(n, a,B, Ve, Ut){
-    res <- numeric(n)
     k <- rpois(n, Ut)
-    between_line <- rnorm(n,0,Ve)
-    for(i in 1:n){
-        if(k[i] == 0){
-            res[i] <- between_line[i]
-    }   
-        else {
-            res[i] <- between_line[i] + sum(rgamma(k[i], shape=a,rate=B))
-        }
-    }
-    return(res)
+    between_line <- rnorm(n,0,sqrt(Ve))
+    between_line +  rgamma(n, k*a, B)
 }
 
 
