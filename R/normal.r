@@ -1,15 +1,4 @@
 
-.dma_normal <- function(obs, s, Vs, Ve, Ut, log=FALSE){
-    p_mu <- mu_scan(Ut)
-    n <- length(p_mu) -1 
-    res <- sum(dnorm(obs, (0:n)*s, sqrt( ((0:n)*Vs) + Ve)) * p_mu)
-    if(log){
-        return(log(res))
-    }
-    return(res)
-}
-
-
 ##' Calculate log-likilhood for a single observation given 
 ##'
 ##' This function calculate the liklihood of a given observed fitness under
@@ -17,8 +6,8 @@
 ##'
 ##'@export
 ##'@param obs numeric, a single observed fitness from a an MA lne
-##'@param s numeric,  mean fitness of mutations
-##'@param Vs numeric, variance in fitness of mutations
+##'@param a numeric,  mean fitness of mutations
+##'@param Va numeric, variance in fitness of mutations
 ##'@param Ve numeric, envrionmental variance 
 ##'@param Ut numeric, expected number of mutations over the length of the
 ##' experiment
@@ -60,9 +49,9 @@
 ##' dma_normal(w, 0.1, 0.01,0.01, 3)
 
 
-rma_normal <- function(n, s, Vs, Ve, Ut){
+rma_normal <- function(n, a, Va, Ve, Ut){
     k <- rpois(n, Ut)
-    vapply(k, function(x) rnorm(1, x*s, sqrt((x*Vs)+Ve)), FUN.VALUE=0)
+    vapply(k, function(x) rnorm(1, x*a, sqrt((x*Va)+Ve)), FUN.VALUE=0)
 }
 
 ##' Find the maximum liklihood estimate of paramaters in MA model
@@ -116,115 +105,3 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
    #        upper=rep(Inf,4))
    )
 }
-
-#' @useDynLib dfe
-#' @useDynLib gsl
-#' @importFrom Rcpp sourceCpp
-#' @export
-Rcpp::cppFunction('
-double old_dma_normal_cpp(std::vector<double> obs, double a, double Va, double Ve, double Ut, bool log){ 
-    //starting values for prob and res are for special case of k=0
-    int n = obs.size();
-    std::vector<double> res (n, 0.0);
-    double running_prob = exp(-Ut);
-    for(size_t i = 0; i< n; i++){
-        res.push_back( (exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve))) *  running_prob ) ;
-    }
-    uint64_t kfac = 1;
-    uint16_t k= 1;
-    while(running_prob < 0.9999){      
-        kfac *= k;
-        double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
-        for(size_t i = 0; i < n; i++){
-            res[i] += mu_prob * (  exp( -( pow(obs[i]-k*a,2)/(2*(Ve+ k*Va)) )) / (sqrt(2*M_PI) * sqrt(k * Va + Ve)) ) ;
-        }
-        k += 1;
-        running_prob += mu_prob;
-    }
-    double lik = 0;
-    for(size_t i = 0; i < n; i++){
-        lik += std::log(res[i]);
-    }
-    if(log){
-        return(lik);
-    }
-    return(exp(lik));
-}')
-
-f <- function(a, Va, Ut){
-  res <- -dma_normal_cpp(w, a=a, Va=Va, Ve=1e-4, Ut=Ut, log=TRUE)
-  print(paste("F:", a, Va, Ut, res))
-  res
-}
-
-lazy_gr <- function(theta){
-    print(theta)
-    g <- function(theta) f(theta[1], theta[2], theta[3])
-    numDeriv::grad(g, theta)
-}
-
-.grad_a <- function(w, a, Va, Ut){
-   max_k <- length( dfe:::mu_scan(Ut, tolerance=1e-4)  )
-sum(per_k(w, a, 0:max_k, Ut, Va, Ve=1e-4))
-}
-
-grad_a <- function(w, a, Va, Ut) sum(vapply(w, .grad_a, a=a, Va=Va, Ut=Ut, FUN.VALUE=0.0))
-
-A <- function(w,a,k) w - a*k
-
-B <- function(w, a, k, U, Va, Ve){
-    exp(-U - (A(w,a,k)**2/ (2*(k*Va+Ve) ))) 
-}
-per_k <- function(w, a, k, U, Va, Ve){
-   top <- B(w,a,k,U,Va,Ve) * k * U**k * A(w,a,k)
-   bottom <- sqrt(2*pi) * (k*Va+Ve)**(3/2) * factorial(k)
-   top / bottom
-}
-
-gradient_k <- function(k, w, a, Va, Ut, Ve=1e-4){
-   #lots of resusable vars...
-   A <-  w - a*k
-   B <-   exp(-Ut - (A**2/ (2*(k*Va+Ve) )))  
-   tvar <- k*Va +Ve                    # 
-   kfac <- factorial(k)
-   ##Only need this once per loop!
-#   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
-   root_2_pi <- sqrt(2*pi)             # 
-   dA <- (B * k * Ut**k * A) / (root_2_pi * tvar**(3/2) * kfac)
-   dVa_left <- (B * k*Ut**k) / (2*root_2_pi * tvar**(3/2) * kfac)
-   dVa_right<- (B * k*Ut**k) * A**2 / (2*root_2_pi * tvar**(5/2) * kfac)
-   dVa<- (-dVa_left  + dVa_right)
-   dUt_left  <- (B * k * Ut**(-1+k))/(root_2_pi * sqrt(tvar) * kfac)
-   dUt_right <- (B  * Ut**k)/        (root_2_pi * sqrt(tvar) * kfac)
-   dUt <- (dUt_left -  dUt_right)
-   print(dUt_left)
-   print(dUt_right)
-   print(dUt)
-   cat("\n")
-   res <- c(dA, dVa, dUt)
-   res
-
-}
-
-
-.grad <- function(w, a, Va, Ut, Ve=1e-4){
-   max_k <- length( dfe:::mu_scan(Ut, tolerance=1e-4))
-   res <- rowSums(sapply(1:max_k, function(x) gradient_k(x, w, a, Va, Ut, Ve)))
-   divisor <- -dma_normal_cpp(w, a, Va, Ve, Ut, log=FALSE)
-   res/divisor
-}
-
-grad <- function(theta){
-    res <- sapply(w, function(x) .grad(x, theta[1], theta[2], theta[3], Ve=1e-4))
-    rowSums(res)
-}
-
-
-g <- function(w, Ve, U){
-    exp(-U - (w**2/(2*Ve))) / (sqrt(2*pi) * sqrt(Ve))
-}
-
-
-
-###top/-exp(dma <- normal <- cpp(w, a, Va, Ve, Utog=TRUE)) 
-###stats4::mle(f, start=list(a=a/2, Va=Va, Ut=4), gr=grad)   

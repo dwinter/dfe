@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-double dma_normal_cpp(NumericVector obs, double a, double Va, double Ve, double Ut, bool log){ 
+double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log){ 
     //starting values for prob and res are for special case of k=0
     int n = obs.size();
     std::vector<double> res (n, 0.0);
@@ -35,7 +35,7 @@ double dma_normal_cpp(NumericVector obs, double a, double Va, double Ve, double 
 
 
 // [[Rcpp::export]]
-NumericVector grad_normal_cpp(NumericVector obs, double a, double Va, double Ve, double Ut, bool log){ 
+NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool){ 
     int n = obs.size();
     std::vector<double> dA (n, 0.0);
     std::vector<double> dV (n, 0.0);
@@ -78,6 +78,3 @@ NumericVector grad_normal_cpp(NumericVector obs, double a, double Va, double Ve,
     }
     return(res);
 }
-
-
-
