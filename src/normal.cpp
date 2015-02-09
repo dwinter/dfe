@@ -49,7 +49,6 @@ NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, dou
         // when k=0 dU  deptends only on U and Ve so do the relatively simple calc
         // without other variables
         dU[i] = -exp( -Ut - (pow(obs[i],2)/(2*Ve))) / (two_root_pi * sqrt(Ve));
-        std::cout <<  dU[i] << std::endl;
     }
     uint64_t kfac = 1;
     uint16_t k= 1;
