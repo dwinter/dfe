@@ -4,14 +4,14 @@
 \alias{rma_normal}
 \title{Calculate log-likilhood for a single observation given}
 \usage{
-rma_normal(n, s, Vs, Ve, Ut)
+rma_normal(n, a, Va, Ve, Ut)
 }
 \arguments{
 \item{n}{numeric, number of lines to simulate}
 
-\item{s}{numeric,  mean fitness of mutations}
+\item{a}{numeric,  mean fitness of mutations}
 
-\item{Vs}{numeric, variance in fitness of mutations}
+\item{Va}{numeric, variance in fitness of mutations}
 
 \item{Ve}{numeric, envrionmental variance}
 

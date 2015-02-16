@@ -4,19 +4,19 @@
 \alias{rma_gamma}
 \title{Simulate fitness effects under of Gamma model}
 \usage{
-rma_gamma(n, a, B, Ve, Ut)
+rma_gamma(n, shape, rate, Ve, Ut)
 }
 \arguments{
 \item{n}{numeric, number of lines to simulate}
-
-\item{a}{numeric,  shape parameter for Gamma}
-
-\item{B}{numeric, Scale paramater for Gamma}
 
 \item{Ve}{numeric, envrionmental variance}
 
 \item{Ut}{numeric, expected number of mutations over the length of the
 experiment}
+
+\item{a}{numeric,  shape parameter for Gamma}
+
+\item{B}{numeric, Scale paramater for Gamma}
 }
 \value{
 numeric, a vector of fitnesses
