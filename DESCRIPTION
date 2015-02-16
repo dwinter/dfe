@@ -12,5 +12,5 @@ Imports:
     RcppGSL
 LinkingTo: Rcpp, 
            RcppGSL
-License: MIT + file LICENSE
+License: GPL-3
 LazyData: true
