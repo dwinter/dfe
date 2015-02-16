@@ -54,6 +54,31 @@ rma_normal <- function(n, a, Va, Ve, Ut){
     rnorm(n, k*a, sqrt(k*Va+Ve))
 }
 
+
+
+#' Method of moments estimators for the normally distributed DFE
+#' @param obs observed fitness values
+#' @param Ve estimate of btween-line (experimental) variance
+#' @return a Mean mutational effect size
+#' @return Va Variance of d.f.e
+#' @return Ut expected number of mutaitons over the experiment
+#' @export
+#' @examples
+#' set.seed(123)
+#' w <- rma_normal(n=20, a=0.1, Va=0.01, Ve=0.01,Ut=1)
+#' mom_ma_normal(w, 0.01)
+mom_ma_normal <- function(obs, Ve){
+    first  <- mean(obs)
+    second <- var(obs) - Ve
+    third  <- mean( (obs - mean(obs))^3)
+    A <- sqrt(9 * second**2 - 8 * third * first)
+    c(a  = ((3*second)  - A) / (4*first), 
+      Va = (((second * A)/first) - (3*second**2/first) + (4*third) ) / (8*first),
+      Ut = (first * A + 3 * second * first) / (2 * third) )
+    
+}
+
+
 ##' Find the maximum liklihood estimate of paramaters in MA model
 ##'@export
 ##'@param obs observed fitness values
@@ -107,3 +132,5 @@ fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
    #        upper=rep(Inf,4))
    )
 }
+
+
