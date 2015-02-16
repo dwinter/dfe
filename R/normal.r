@@ -79,17 +79,20 @@ mom_ma_normal <- function(obs, Ve){
 }
 
 
-##' Find the maximum liklihood estimate of paramaters in MA model
-##'@export
-##'@param obs observed fitness values
-##"@param fixed named list of model paramater values to fix
-##'@param starts named list of starting values of varying parameters
-##'@param verbose logical, be verbose
-##'@return mle fit object
-##'@examples
-##' set.seed(123)
-##' w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
-##' fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(s=0.01))
+
+#' Find the maximum liklihood estimate of paramaters in MA model
+#' @useDynLib dfe
+#' @importFrom Rcpp, sourceCpp
+#' @export
+#' @param obs observed fitness values
+#' @param fixed named list of model paramater values to fix
+#' @param starts named list of starting values of varying parameters
+#' @param verbose logical, be verbose
+#' @return mle fit object
+#' @examples
+#' set.seed(123)
+#' w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
+#' fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(s=0.01))
 
 
 fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){

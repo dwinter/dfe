@@ -9,6 +9,8 @@ fit_ma_normal(obs, fixed = NULL, starts = NULL, verbose = TRUE)
 \arguments{
 \item{obs}{observed fitness values}
 
+\item{fixed}{named list of model paramater values to fix}
+
 \item{starts}{named list of starting values of varying parameters}
 
 \item{verbose}{logical, be verbose}
