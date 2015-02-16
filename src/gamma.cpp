@@ -51,11 +51,11 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
     double result;
     double error;
     gsl_integration_workspace* ws = gsl_integration_workspace_alloc(100000);
-    while (running_prob < 0.999){
+    while (running_prob < 0.9999){
         kfac *= k;
         double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
         for(size_t i = 0; i < nobs; ++i){
-            gsl_integration_qagiu(&f_ptrs[i], 0.,0., 1e-7, 100000, ws, &result, &error);
+            gsl_integration_qagiu(&f_ptrs[i], 0.,1e-7, 1e-7, 100000, ws, &result, &error);
             res[i] += result * mu_prob;
         }
         running_prob += mu_prob;
