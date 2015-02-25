@@ -5,12 +5,14 @@ Authors@R: "David Winter <david.winter@gmail.com> [aut, cre]"
 Description: Provides functions to simulate, calculate likilihoods and fit
     models for the distribution of fitness effects arising from spontaneaous
     mutations.
-Depends:
+Depends: 
     R (>= 3.0)
-Imports:
+Imports: 
     Rcpp,
     RcppGSL
-LinkingTo: Rcpp, 
-           RcppGSL
+LinkingTo: 
+    Rcpp,
+    RcppGSL
 License: GPL-3
 LazyData: true
+Suggests: testthat

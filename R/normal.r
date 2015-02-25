@@ -82,7 +82,7 @@ mom_ma_normal <- function(obs, Ve){
 
 #' Find the maximum liklihood estimate of paramaters in MA model
 #' @useDynLib dfe
-#' @importFrom Rcpp, sourceCpp
+#' @importFrom Rcpp sourceCpp
 #' @export
 #' @param obs observed fitness values
 #' @param fixed named list of model paramater values to fix

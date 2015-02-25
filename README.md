@@ -1,3 +1,6 @@
+[![Travis-CI Build
+Status](https://travis-ci.org/dwinter/dfe.png?branch=master)](https://travis-ci.org/dwinter/dfe)
+
 #Distributions of fitness effects
 
 This is a work-in-progress package, aiming to provide functions for users to
