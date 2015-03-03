@@ -47,7 +47,6 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
         f_ptrs[i] =  F;
         //Start each result with the k=0 case
         res[i] = gsl_ran_gaussian_pdf(obs[i], sqrt(Ve)) * running_prob;
-        std::cout << res[i] << std::endl;
     }
     double result;
     double error;
@@ -57,7 +56,6 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
         double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
         for(size_t i = 0; i < nobs; ++i){
             gsl_integration_qagiu(&f_ptrs[i], 0., 1e-5, 1e-5, 1000, ws, &result, &error);
-            std::cout << k << '\t' << result << std::endl;
             res[i] += result * mu_prob;
         }
         running_prob += mu_prob;
