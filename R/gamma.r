@@ -75,9 +75,9 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
         -dma_gamma(obs, shape, rate, Ve, Ut,log=TRUE)
     }
       
-    mle(Q, start=start, fixed=fixed)
-        #method="L-BFGS-B,
-        # ower=rep(1e-6,length(start)))
+    mle(Q, start=start, fixed=fixed
+        method="L-BFGS-B",
+        lower=rep(1e-6,length(start)))
         
 }
 
