@@ -88,12 +88,13 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 
 #' M.O.M estimate of gamma model with known mutation rate
 #' @param obs, numeric, vector of observed fitnesses
+#' @param Ve, numeric, experimental variance
 #' @param Ut, numeric, mutation rate
 #' @export
-mom_ma_gamma <-function(obs, Ut){
+mom_ma_gamma <-function(obs, Ut, Ve){
     first <- mean(obs)
     second <- var(obs)
-    denom <- first**2 - Ut * second
+    denom <- first**2 - Ut * second   + Ut *Ve
     abs(c(shape= first**2 / denom, rate=first*Ut/denom))
 }
 
