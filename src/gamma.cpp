@@ -27,7 +27,8 @@ double integrand(double x, void * p){
     return(gsl_ran_gaussian_pdf((w-x), sigma) * gsl_ran_gamma_pdf(x, k_alpha,1/beta));
 }
 
-
+//' Density function of gamma dfe
+//' @export
 // [[Rcpp::export]]
 double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve,  double Ut, bool log = true){
     double nobs = obs.size();

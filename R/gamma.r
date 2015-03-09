@@ -43,6 +43,7 @@ dma_gamma_r <- function(w, a, B, Ve, Ut, log=FALSE){
 }
 
 
+##' Fit a MA-model with Gamma dfe
 ##'@param a numeric,  shape parameter for Gamma
 ##'@param B numeric, Scale paramater for Gamma
 ##'@param Ve numeric, envrionmental variance 

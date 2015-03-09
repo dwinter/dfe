@@ -2,6 +2,8 @@
 
 using namespace Rcpp;
 
+//' Density function for normal dfe
+//' @export
 // [[Rcpp::export]]
 double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log){ 
     //starting values for prob and res are for special case of k=0
@@ -32,8 +34,8 @@ double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, 
     return(exp(lik));
 }
 
-
-
+//' Gradient function of the normal model
+//' @export
 // [[Rcpp::export]]
 NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, double Ut){ 
     int n = obs.size();

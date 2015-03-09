@@ -2,6 +2,7 @@
 % Please edit documentation in R/gamma.r
 \name{fit_ma_gamma}
 \alias{fit_ma_gamma}
+\title{Fit a MA-model with Gamma dfe}
 \usage{
 fit_ma_gamma(obs, fixed = list(), start = list(), verbose = FALSE)
 }
@@ -20,5 +21,8 @@ Note, all paramaters must be given either a fixed or a starting value}
 \item{Ve}{numeric, envrionmental variance}
 
 \item{Ut}{numeric, expected number of mutations over the length of the}
+}
+\description{
+Fit a MA-model with Gamma dfe
 }
 
