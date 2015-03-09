@@ -15,3 +15,5 @@ LinkingTo:
 License: GPL-3
 LazyData: true
 Suggests: testthat
+SystemRequirements: GNU GSL
+
