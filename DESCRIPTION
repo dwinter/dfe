@@ -9,11 +9,9 @@ Depends:
     R (>= 3.0)
 Imports: 
     Rcpp,
-    RcppGSL, 
     stats4
 LinkingTo: 
     Rcpp,
-    RcppGSL
 License: GPL-3
 LazyData: true
 Suggests: testthat
