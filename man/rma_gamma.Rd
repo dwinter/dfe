@@ -9,14 +9,14 @@ rma_gamma(n, shape, rate, Ve, Ut)
 \arguments{
 \item{n}{numeric, number of lines to simulate}
 
+\item{shape}{numeric,  shape parameter for Gamma}
+
+\item{rate}{numeric, Scale paramater for Gamma}
+
 \item{Ve}{numeric, envrionmental variance}
 
 \item{Ut}{numeric, expected number of mutations over the length of the
 experiment}
-
-\item{a}{numeric,  shape parameter for Gamma}
-
-\item{B}{numeric, Scale paramater for Gamma}
 }
 \value{
 numeric, a vector of fitnesses
@@ -27,7 +27,7 @@ distribution of mutations takes a Gamma distribution
 }
 \examples{
 set.seed(123)
-w <- rma_gamma(20, 0.1, 2, 1e-4, 3)
-dma_gamma(w, 0.1, 2, 1e-4, 3)
+w <- rma_gamma(20, shape=0.1, rate=2, Ve=1e-4, Ut=3)
+dma_gamma(obs=w, shape=0.1,rate= 2, Ve=1e-4, Ut = 3)
 }
 

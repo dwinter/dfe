@@ -5,7 +5,12 @@
 \title{Get mean and variance of a Gamma distribution given shape and rate
 paramaters}
 \usage{
-moments_gamma(a, B)
+moments_gamma(shape, rate)
+}
+\arguments{
+\item{shape}{numeric,  shape parameter for Gamma}
+
+\item{rate}{numeric, Scale paramater for Gamma}
 }
 \description{
 Get mean and variance of a Gamma distribution given shape and rate

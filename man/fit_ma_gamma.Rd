@@ -7,6 +7,8 @@
 fit_ma_gamma(obs, fixed = list(), start = list(), verbose = FALSE)
 }
 \arguments{
+\item{obs,}{numeric observed fitnesses}
+
 \item{fixed}{a named list containing values for any of the above paramaters,
 that should be fixed during the maximum likelihood estimation}
 
@@ -14,9 +16,11 @@ that should be fixed during the maximum likelihood estimation}
 paramaters
 Note, all paramaters must be given either a fixed or a starting value}
 
-\item{a}{numeric,  shape parameter for Gamma}
+\item{verbose,}{boolean, print values at each execution (default TRUE)}
 
-\item{B}{numeric, Scale paramater for Gamma}
+\item{shape}{numeric,  shape parameter for Gamma}
+
+\item{rate}{numeric, Scale paramater for Gamma}
 
 \item{Ve}{numeric, envrionmental variance}
 

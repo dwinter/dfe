@@ -28,6 +28,12 @@ double integrand(double x, void * p){
 }
 
 //' Density function of gamma dfe
+//' @param obs, numeric, observed fitnesses
+//' @param shape, numeric, shape of gamma distribution
+//' @param rate, numeric, rate of gamma distribution
+//' @param Ve, numeric, experimental variance
+//' @param Ut, numeric, mutation rate
+//' @param log, boolean, return log-liklihood (default=TRUE)
 //' @export
 // [[Rcpp::export]]
 double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve,  double Ut, bool log = true){

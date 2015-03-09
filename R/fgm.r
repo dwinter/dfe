@@ -1,22 +1,23 @@
-## Simulate fitness effects under fishers geometric model 
-##'
-##' This function simulates fitness effects under a model in which the fitness
-##' distribution is simulated as coming from Fisher's geometic model
-##'
-##'@export
-##'@param n numeric, number of lines to simulate
-##'@param start numeric,  vector describing the starting position relative to an
-##' optimum at teh origin (can take any number of dimensions)
-##'@param Vm numeric, variance in size of mutations
-##'@param Ve numeric, envrionmental variance 
-##'@param Ut numeric, expected number of mutations over the length of the
-##' experiment
-##'@return numeric, a vector of fitnesses
-##'@export
-##'@examples
-##' set.seed(123)
-##' w <- rma_FGM(100, c(0.04,-0.04),Ve=1e=4, Vm=0.003, Ut=2)
-##'
+#' Simulate fitness effects under fishers geometric model 
+#'
+#' This function simulates fitness effects under a model in which the fitness
+#' distribution is simulated as coming from Fisher's geometic model
+#'
+#'@export
+#'@param n numeric, number of lines to simulate
+#'@param start numeric,  vector describing the starting position relative to an
+#' optimum at teh origin (can take any number of dimensions)
+#'@param Vm numeric, variance in size of mutations
+#'@param Ve numeric, envrionmental variance 
+#'@param Ut numeric, expected number of mutations over the length of the
+#' experiment
+#'@return numeric, a vector of fitnesses
+#' @param FUN, function, fitness funciton
+#'@export
+#'@examples
+#' set.seed(123)
+#' w <- rma_FGM(100, start=c(0.04,-0.04), Ve=1e-4, Vm=0.003, Ut=2)
+#' mean(w)
 
 
 rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
@@ -45,7 +46,15 @@ sq_dist <- function(coords, optimum="origin"){
     return(d**2)
 }
 
-##' @export
+
+
+#' Estimate moments of d.f.e. as defined by fishers geometic model
+#' @param n numeric number of observations from which to estimate the model
+#' @param start, numeric vector of starting values
+#' @param Vm, variance of mutation-size
+#' @param FUN, function, fitness funciton
+#' @param plot, boolean, make density plot of dfe (default=FALSE)
+#' @export
 estimate_FGM_moments <- function(n=1e5, start, Vm, FUN=sq_dist, plot=FALSE){
     sims <- replicate(n, start + rnorm(length(start), 0, sqrt(Vm)))
     w <-  apply(sims, 2, FUN) - FUN(start)

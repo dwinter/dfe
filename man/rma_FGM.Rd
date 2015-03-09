@@ -2,8 +2,7 @@
 % Please edit documentation in R/fgm.r
 \name{rma_FGM}
 \alias{rma_FGM}
-\title{This function simulates fitness effects under a model in which the fitness
-distribution is simulated as coming from Fisher's geometic model}
+\title{Simulate fitness effects under fishers geometric model}
 \usage{
 rma_FGM(n, start, Vm, Ve, Ut, FUN = sq_dist)
 }
@@ -19,6 +18,8 @@ optimum at teh origin (can take any number of dimensions)}
 
 \item{Ut}{numeric, expected number of mutations over the length of the
 experiment}
+
+\item{FUN,}{function, fitness funciton}
 }
 \value{
 numeric, a vector of fitnesses
@@ -29,6 +30,7 @@ distribution is simulated as coming from Fisher's geometic model
 }
 \examples{
 set.seed(123)
-w <- rma_FGM(100, c(0.04,-0.04),Ve=1e=4, Vm=0.003, Ut=2)
+w <- rma_FGM(100, start=c(0.04,-0.04), Ve=1e-4, Vm=0.003, Ut=2)
+mean(w)
 }
 

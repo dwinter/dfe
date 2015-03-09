@@ -2,7 +2,7 @@
 % Please edit documentation in R/normal.r
 \name{rma_normal}
 \alias{rma_normal}
-\title{Calculate log-likilhood for a single observation given}
+\title{Simulate fitness effects under of normal model}
 \usage{
 rma_normal(n, a, Va, Ve, Ut)
 }
@@ -17,36 +17,18 @@ rma_normal(n, a, Va, Ve, Ut)
 
 \item{Ut}{numeric, expected number of mutations over the length of the
 experiment}
-
-\item{obs}{numeric, a single observed fitness from a an MA lne}
-
-\item{log}{logical, return log-transformed likilihod?}
-
-\item{s}{numeric,  mean fitness of mutations}
-
-\item{Vs}{numeric, variance in fitness of mutations}
-
-\item{Ve}{numeric, envrionmental variance}
-
-\item{Ut}{numeric, expected number of mutations over the length of the
-experiment}
 }
 \value{
-numeric, likilood of observed data given paramaters
-
 numeric, a vector of fitnesses
 }
 \description{
-This function calculate the liklihood of a given observed fitness under
-a model in which the fitness effects of mutations are normall distributed
-}
-\examples{
-Changinh mutation rates:
-dma_normal(0.1, 0.1, 0.01, 0.01, 1)
-dma_normal(0.1, 0.1, 0.01, 0.01, 3)
-Simulate fitness effects under of normal model
-
 This function simulates fitness effects under a model in which the fitness
 distribution of mutations is normally distributed
+}
+\examples{
+set.seed(123)
+w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
+dma_normal(w, 0.1, 0.01,0.01, 1)
+dma_normal(w, 0.1, 0.01,0.01, 3)
 }
 

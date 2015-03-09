@@ -8,16 +8,16 @@
 ##'
 ##'@export
 ##'@param n numeric, number of lines to simulate
-##'@param a numeric,  shape parameter for Gamma
-##'@param B numeric, Scale paramater for Gamma
+##'@param shape numeric,  shape parameter for Gamma
+##'@param rate numeric, Scale paramater for Gamma
 ##'@param Ve numeric, envrionmental variance 
 ##'@param Ut numeric, expected number of mutations over the length of the
 ##' experiment
 ##'@return numeric, a vector of fitnesses
 ##'@examples
 ##' set.seed(123)
-##' w <- rma_gamma(20, 0.1, 2, 1e-4, 3)
-##' dma_gamma(w, 0.1, 2, 1e-4, 3)
+##' w <- rma_gamma(20, shape=0.1, rate=2, Ve=1e-4, Ut=3)
+##' dma_gamma(obs=w, shape=0.1,rate= 2, Ve=1e-4, Ut = 3)
 rma_gamma <- function(n, shape,rate, Ve, Ut){
     k <- rpois(n, Ut)
     between_line <- rnorm(n,0,sqrt(Ve))
@@ -27,10 +27,12 @@ rma_gamma <- function(n, shape,rate, Ve, Ut){
 
 #' Calculate probability density of a set of fitness measures under a
 #' Normal-Gamma convolution model
+#'@param w numeric, observed data
 #'@param a numeric,  shape parameter for Gamma
 #'@param B numeric, Scale paramater for Gamma
 #'@param Ve numeric, envrionmental variance 
 #'@param Ut numeric, expected number of mutations over the length of the
+#'@param log boolean, return log liklihood
 #'@export
 #'@examples
 #' dma_gamma( c(0.1,0.01), 0.05, 2, 1e-4, 2)
@@ -43,17 +45,19 @@ dma_gamma_r <- function(w, a, B, Ve, Ut, log=FALSE){
 }
 
 
-##' Fit a MA-model with Gamma dfe
-##'@param a numeric,  shape parameter for Gamma
-##'@param B numeric, Scale paramater for Gamma
-##'@param Ve numeric, envrionmental variance 
-##'@param Ut numeric, expected number of mutations over the length of the
-##'@param fixed a named list containing values for any of the above paramaters,
-##' that should be fixed during the maximum likelihood estimation
-##'@param start a named list contaning starting values for any of the above
-##' paramaters
-##' Note, all paramaters must be given either a fixed or a starting value
-##'@export
+#' Fit a MA-model with Gamma dfe
+#' @param obs, numeric observed fitnesses
+#' @param verbose, boolean, print values at each execution (default TRUE)
+#' @param shape numeric,  shape parameter for Gamma
+#' @param rate numeric, Scale paramater for Gamma
+#' @param Ve numeric, envrionmental variance 
+#' @param Ut numeric, expected number of mutations over the length of the
+#' @param fixed a named list containing values for any of the above paramaters,
+#' that should be fixed during the maximum likelihood estimation
+#' @param start a named list contaning starting values for any of the above
+#' paramaters
+#' Note, all paramaters must be given either a fixed or a starting value
+#'@export
 
 fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
     require(stats4)
@@ -82,8 +86,10 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
         
 }
 
-# M.O.M estimate of gamma model with known mutation rate
-#'@export
+#' M.O.M estimate of gamma model with known mutation rate
+#' @param obs, numeric, vector of observed fitnesses
+#' @param Ut, numeric, mutation rate
+#' @export
 mom_ma_gamma <-function(obs, Ut){
     first <- mean(obs)
     second <- var(obs)
@@ -102,11 +108,13 @@ mom_ma_gamma <-function(obs, Ut){
     return(res)
 }
   
-##' Get mean and variance of a Gamma distribution given shape and rate
-##' paramaters
-##' @export
-moments_gamma <-function(a,B){
-    return(c(mean=a/B, var=a/(B^2)))
+#' Get mean and variance of a Gamma distribution given shape and rate
+#' paramaters
+#' @param shape numeric,  shape parameter for Gamma
+#' @param rate numeric, Scale paramater for Gamma
+#' @export
+moments_gamma <-function(shape, rate){
+    return(c(mean=shape/rate, var=shape/(rate^2)))
 }
 
 

@@ -2,18 +2,35 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' Density function of gamma dfe
+#' @param obs, numeric, observed fitnesses
+#' @param shape, numeric, shape of gamma distribution
+#' @param rate, numeric, rate of gamma distribution
+#' @param Ve, numeric, experimental variance
+#' @param Ut, numeric, mutation rate
+#' @param log, boolean, return log-liklihood (default=TRUE)
 #' @export
 dma_gamma <- function(obs, shape, rate, Ve, Ut, log = TRUE) {
     .Call('dfe_dma_gamma', PACKAGE = 'dfe', obs, shape, rate, Ve, Ut, log)
 }
 
 #' Density function for normal dfe
+#' @param obs numeric, observed fitnesses
+#' @param a numeric, mean effect-size of mutations
+#' @param Va numeric variance of dfe
+#' @param Ve numeric variance of experimental system
+#' @param Ut numeric mutation rate
+#' @param log boolean return log liklihood (default=TRUE)
 #' @export
-dma_normal <- function(obs, a, Va, Ve, Ut, log) {
+dma_normal <- function(obs, a, Va, Ve, Ut, log = TRUE) {
     .Call('dfe_dma_normal', PACKAGE = 'dfe', obs, a, Va, Ve, Ut, log)
 }
 
 #' Gradient function of the normal model
+#' @param obs numeric, observed fitnesses
+#' @param a numeric, mean effect-size of mutations
+#' @param Va numeric variance of dfe
+#' @param Ve numeric variance of experimental system
+#' @param Ut numeric mutation rate
 #' @export
 grad_normal <- function(obs, a, Va, Ve, Ut) {
     .Call('dfe_grad_normal', PACKAGE = 'dfe', obs, a, Va, Ve, Ut)

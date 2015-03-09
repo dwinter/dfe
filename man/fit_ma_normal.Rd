@@ -24,6 +24,6 @@ Find the maximum liklihood estimate of paramaters in MA model
 \examples{
 set.seed(123)
 w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
-fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(s=0.01))
+fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(a=0.01))
 }
 

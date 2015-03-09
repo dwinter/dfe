@@ -1,34 +1,4 @@
 
-##' Calculate log-likilhood for a single observation given 
-##'
-##' This function calculate the liklihood of a given observed fitness under
-##' a model in which the fitness effects of mutations are normall distributed
-##'
-##'@export
-##'@param obs numeric, a single observed fitness from a an MA lne
-##'@param a numeric,  mean fitness of mutations
-##'@param Va numeric, variance in fitness of mutations
-##'@param Ve numeric, envrionmental variance 
-##'@param Ut numeric, expected number of mutations over the length of the
-##' experiment
-##'@param log logical, return log-transformed likilihod?
-##'@return numeric, likilood of observed data given paramaters
-##'@examples
-##' Changinh mutation rates:
-##' dma_normal(0.1, 0.1, 0.01, 0.01, 1)
-##' dma_normal(0.1, 0.1, 0.01, 0.01, 3)
-
-
-
-#dma_normal <- function(obs, s, Vs, Ve, Ut, log=FALSE){
-#    res <- sum(vapply(obs, .dma_normal, s=s, Vs=Vs, Ve=Ve, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
-#    if(!log){
-#       return(exp(res))
-#    }
-#    res
-#}
-
-
 ##' Simulate fitness effects under of normal model 
 ##'
 ##' This function simulates fitness effects under a model in which the fitness
@@ -36,8 +6,8 @@
 ##'
 ##'@export
 ##'@param n numeric, number of lines to simulate
-##'@param s numeric,  mean fitness of mutations
-##'@param Vs numeric, variance in fitness of mutations
+##'@param a numeric,  mean fitness of mutations
+##'@param Va numeric, variance in fitness of mutations
 ##'@param Ve numeric, envrionmental variance 
 ##'@param Ut numeric, expected number of mutations over the length of the
 ##' experiment
@@ -92,7 +62,7 @@ mom_ma_normal <- function(obs, Ve){
 #' @examples
 #' set.seed(123)
 #' w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
-#' fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(s=0.01))
+#' fit_ma_normal(w, fixed=list(Ve=0.01), starts=list(a=0.01))
 
 
 fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){

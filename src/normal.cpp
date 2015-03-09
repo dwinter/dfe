@@ -3,9 +3,15 @@
 using namespace Rcpp;
 
 //' Density function for normal dfe
+//' @param obs numeric, observed fitnesses
+//' @param a numeric, mean effect-size of mutations
+//' @param Va numeric variance of dfe
+//' @param Ve numeric variance of experimental system
+//' @param Ut numeric mutation rate
+//' @param log boolean return log liklihood (default=TRUE)
 //' @export
 // [[Rcpp::export]]
-double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log){ 
+double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log = true){ 
     //starting values for prob and res are for special case of k=0
     int n = obs.size();
     std::vector<double> res (n, 0.0);
@@ -35,6 +41,11 @@ double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, 
 }
 
 //' Gradient function of the normal model
+//' @param obs numeric, observed fitnesses
+//' @param a numeric, mean effect-size of mutations
+//' @param Va numeric variance of dfe
+//' @param Ve numeric variance of experimental system
+//' @param Ut numeric mutation rate
 //' @export
 // [[Rcpp::export]]
 NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, double Ut){ 

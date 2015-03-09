@@ -27,7 +27,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // dma_normal
-double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log);
+double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log = true);
 RcppExport SEXP dfe_dma_normal(SEXP obsSEXP, SEXP aSEXP, SEXP VaSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
