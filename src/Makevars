@@ -1,2 +1,2 @@
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` \
-           `gsl-config --libs`
+           `$(R_HOME)/bin/Rscript get_flags`
