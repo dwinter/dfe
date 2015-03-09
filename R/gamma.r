@@ -75,7 +75,7 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
         -dma_gamma(obs, shape, rate, Ve, Ut,log=TRUE)
     }
       
-    mle(Q, start=start, fixed=fixed
+    mle(Q, start=start, fixed=fixed,
         method="L-BFGS-B",
         lower=rep(1e-6,length(start)))
         
@@ -87,7 +87,7 @@ mom_ma_gamma <-function(obs, Ut){
     first <- mean(obs)
     second <- var(obs)
     denom <- first**2 - Ut * second
-    -c(shape= first**2 / denom, rate=first*Ut/denom)
+    abs(c(shape= first**2 / denom, rate=first*Ut/denom))
 }
 
 

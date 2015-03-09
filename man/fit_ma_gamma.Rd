@@ -2,8 +2,6 @@
 % Please edit documentation in R/gamma.r
 \name{fit_ma_gamma}
 \alias{fit_ma_gamma}
-\title{Calculate probability density of a set of fitness measures under a
-Normal-Gamma convolution model}
 \usage{
 fit_ma_gamma(obs, fixed = list(), start = list(), verbose = FALSE)
 }
@@ -22,20 +20,5 @@ Note, all paramaters must be given either a fixed or a starting value}
 \item{Ve}{numeric, envrionmental variance}
 
 \item{Ut}{numeric, expected number of mutations over the length of the}
-
-\item{a}{numeric,  shape parameter for Gamma}
-
-\item{B}{numeric, Scale paramater for Gamma}
-
-\item{Ve}{numeric, envrionmental variance}
-
-\item{Ut}{numeric, expected number of mutations over the length of the}
-}
-\description{
-Calculate probability density of a set of fitness measures under a
-Normal-Gamma convolution model
-}
-\examples{
-dma_gamma( c(0.1,0.01), 0.05, 2, 1e-4, 2)
 }
 
