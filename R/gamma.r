@@ -46,6 +46,7 @@ dma_gamma_r <- function(w, a, B, Ve, Ut, log=FALSE){
 
 
 #' Fit a MA-model with Gamma dfe
+#' @importFrom stats4 mle
 #' @param obs, numeric observed fitnesses
 #' @param verbose, boolean, print values at each execution (default TRUE)
 #' @param shape numeric,  shape parameter for Gamma
@@ -60,7 +61,6 @@ dma_gamma_r <- function(w, a, B, Ve, Ut, log=FALSE){
 #'@export
 
 fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
-    require(stats4)
     all_args <- c("shape", "rate", "Ve", "Ut")
     known_args <- c( names(fixed), names(start) )  
     if(!all(all_args %in% known_args)){

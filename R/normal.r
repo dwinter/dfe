@@ -53,6 +53,7 @@ mom_ma_normal <- function(obs, Ve){
 #' Find the maximum liklihood estimate of paramaters in MA model
 #' @useDynLib dfe
 #' @importFrom Rcpp sourceCpp
+#' @importFrom stats4 mle
 #' @export
 #' @param obs observed fitness values
 #' @param fixed named list of model paramater values to fix
@@ -66,7 +67,6 @@ mom_ma_normal <- function(obs, Ve){
 
 
 fit_ma_normal <- function(obs, fixed=NULL, starts=NULL, verbose=TRUE){
-    require(stats4)
     #Start by dealing with set/known/fixed arguments
     all_args <- c("a", "Va", "Ve", "Ut")
     known_args <- c( names(fixed), names(starts) )

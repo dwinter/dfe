@@ -1,11 +1,9 @@
-// [[Rcpp::depends(RcppGSL)]]
 #include <cmath>
 
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_integration.h>
 
 #include <Rcpp.h>
-#include <RcppGSL.h>
 
 
 struct convolve_params{

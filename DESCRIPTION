@@ -9,7 +9,8 @@ Depends:
     R (>= 3.0)
 Imports: 
     Rcpp,
-    RcppGSL
+    RcppGSL, 
+    stats4
 LinkingTo: 
     Rcpp,
     RcppGSL
