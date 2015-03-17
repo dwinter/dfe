@@ -14,6 +14,7 @@ LinkingTo:
     Rcpp
 License: GPL-3
 LazyData: true
-Suggests: testthat
+Suggests: testthat,
+    knitr
 SystemRequirements: GNU GSL
-
+VignetteBuilder: knitr

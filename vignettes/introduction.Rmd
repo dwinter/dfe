@@ -1,0 +1,140 @@
+---
+title: "Calculating, fitting and simulating models of the distribution of
+fitness effects"
+author: "David winter"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+#Introduction
+
+## Re-running the mlgenomu example
+
+The test data that comes with mlgenomeu is included as part of this package, we
+can load it via `data()`
+
+```{r, data}
+data(ma_control)
+data(ma_experimental)
+```
+
+If these data really come from a mutation accumulation experiment it's an odd
+one, as the among-line variance is lower in the experimental data than the
+control:
+
+
+```{r, var}
+c(Control=var(ma_control), Experiment=var(ma_experimental))
+```
+
+```{r, density, fig.align='center', fig.width=4}
+d_exp <- density(ma_experimental)
+plot(density(ma_control), xlab="Some fitness measure", 
+                          ylim=c(0,0.8), main="Emperical density kernels")
+lines(d_exp$x, d_exp$y, col='red')  
+```
+
+
+The functions in `dfe` take the difference in fitness between ancestral and
+mutation-accumulation lines and input. We can do that, and see the mean fitness
+of the MA lines is sligthly lower than that of the controls (as it makes
+calculation much mroe straight forward, we treat positive values as deleterious
+mutations):
+
+```{r, w}
+w <- ma_experimental - mean(ma_control)
+mean(w)
+```
+
+## The Bateman-Mukai estimators
+
+The classic Bateman-Mukai estimators are privded by the function `BM()` which
+takes the dchange in mean fitness ($\Delta M$) and the variance of the ancestral
+lines subjected to the same fitness assay ($V_e$) as inputs.
+Unfortunately, the low variane in the MA lines is going to make for a
+non-sensical estimate of the mutation rate ($U$) and effect size ($E[a]$):
+
+
+```{r, bm}
+BM(w, var(ma_control))
+```
+
+Negative mutations of very large effect... We'll see a sensible use of these
+estimators later. 
+
+## The Keightley Gamma-Normal model
+
+If you are familar with mlgenomeu there are couple of things to note about our
+implimentation of this model. First, we use a paramaterisation of the Gamma
+distribution with shape ($\alpha$) and rate ($\beta$) parmaters, meaning the
+mean fitness-effect of mutations ($E[a]$ in mlgenomu) is given by 
+$\frac{\alpha}{\beta}$, and variance in fitness is $\frac{\alpha}{\beta^2}$.
+Second, we take the mean difference in fitness for the MA lines as input. 
+
+
+### Starting values via the method of moments
+In the documentation for mlgenomeu, you are told to set some specific starting
+values and fixed-values to start performing a profile likelihood search. We 
+have dveloped a method of moments estimator to find good starting values, 
+depending only on a suggestd mutation rate. For now we need to first explicitly
+calculate these starting values using `mom_ma_gamma()`
+
+
+```{r mom_ma}
+mom_ma_gamma(obs=w, Ut=0.5, Ve=var(ma_control))
+```
+
+Remember, the mean effect of mutations is $\frac{\alpha}{\beta}$, which, given
+our estimate isi $\frac{0.003}{0.046} \approx 0.0652$
+
+### Likelihood for a model
+
+We can use these values to calculate the log liklihood of a specific
+distribution of fitness effects and mutation rate. The likelihood functions in 
+`dfe` all start with `dma_` which is short for density of a mutation
+accumulation model. To calculate the model we have to provide values for the 
+shape and rate that specify the Gamma distribution, $Ve$ and $Ut$ the
+per-experiment mutation rate:
+
+```{r dma}
+dma_gamma(obs=w, shape=0.003, rate=0.046, Ve=var(ma_control), Ut=0.5)
+```
+
+### Fitting a model
+
+The function `fit_ma_gamma` can perform a maximum liklihood search. This
+function wraps the R function `stats4::mle`, which in turn using the base R
+function `optim` to perform the search. We just need to provide a lists of fixed
+and starting values. Let's follow the mlgenomeu example and fix `Ve` and the
+`rate` paramater, and estimate the rest:
+
+
+```{r fit, warning=FALSE}
+fit <- fit_ma_gamma(obs=w, 
+                    fixed=list(rate=0.046, Ve=var(ma_control)),
+                    start=list(Ut=0.5, shape=0.003))
+fit
+```
+
+The function throws some warnings, which are the result of the very low number
+we end up estimating. Ignoring the warnings for now, we can see our ML estimates
+of the shape paramater and mutation rate are getitng close to zero. In fact, we
+can show that a model with zero mutations equally as good a fit:
+
+
+```{r, zero}
+stats4::logLik(fit)
+dma_gamma(obs=w, shape=0.003, rate=0.046, Ve=var(ma_control), Ut=0)   
+```
+
+This also gives us a change to confirm the density function is working as
+expected, since in the case of zero mutations the likelihood should be the same
+as that caclulated from a normal distribution with $mean = 0$ and $\sigma = Ve$:
+
+```{r, normal}
+log(prod(dnorm(w, mean=0, sd=sqrt(var(ma_control))))) 
+```
