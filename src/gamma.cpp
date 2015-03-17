@@ -2,6 +2,7 @@
 
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_integration.h>
+#include <gsl/gsl_errno.h>
 
 #include <Rcpp.h>
 
@@ -13,6 +14,7 @@ struct convolve_params{
     double beta;
     int* k;
 };
+
 
 double integrand(double x, void * p){
     //double w, double Ve, double alpha, double beta){
@@ -35,6 +37,7 @@ double integrand(double x, void * p){
 //' @export
 // [[Rcpp::export]]
 double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve,  double Ut, bool log = true){
+    gsl_set_error_handler_off ();
     double nobs = obs.size();
     int k = 1;
     double kfac = 1;
@@ -60,8 +63,13 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
         kfac *= k;
         double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
         for(size_t i = 0; i < nobs; ++i){
-            gsl_integration_qagiu(&f_ptrs[i], 0., 1e-7, 1e-7, 10000, ws, &result, &error);
+            int err = 0;
+            err = gsl_integration_qagiu(&f_ptrs[i], 0., 1e-7, 1e-7, 10000, ws, &result, &error);
             res[i] += result * mu_prob;
+            if(err){
+                Rf_warning("GSL intergration returned error %d", err);
+//                std::cout << err << std::endl;
+            }
         }
         running_prob += mu_prob;
         k += 1;
@@ -75,4 +83,3 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
     }
     return(exp(final_result));
 }
-
