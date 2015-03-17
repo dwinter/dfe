@@ -15,6 +15,7 @@ LinkingTo:
 License: GPL-3
 LazyData: true
 Suggests: testthat,
-    knitr
+    knitr, 
+    rmarkdown
 SystemRequirements: GNU GSL
 VignetteBuilder: knitr
