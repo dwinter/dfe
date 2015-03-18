@@ -17,7 +17,7 @@ double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, 
     std::vector<double> res (n, 0.0);
     double running_prob = exp(-Ut);
     for(size_t i = 0; i< n; i++){
-        res[0] = exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve)) *  running_prob;
+        res[i] = exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve)) *  running_prob;
     }
     uint64_t kfac = 1;
     uint16_t k= 1;

@@ -19,8 +19,8 @@ can load it via `data()`
 
 ```{r, data}
 library(dfe)
-data(ma_control)
-data(ma_experimental)
+data('ma_control')
+data('ma_experimental')
 ```
 
 If these data really come from a mutation accumulation experiment it's an odd
