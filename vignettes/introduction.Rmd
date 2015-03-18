@@ -18,6 +18,7 @@ The test data that comes with mlgenomeu is included as part of this package, we
 can load it via `data()`
 
 ```{r, data}
+library(dfe)
 data(ma_control)
 data(ma_experimental)
 ```
