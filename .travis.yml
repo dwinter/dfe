@@ -1,9 +1,12 @@
 # Sample .travis.yml for R projects from https://github.com/craigcitro/r-travis
 
 language: r
+os: osx
 apt_packages:
     - libgsl0-dev  
     - libgsl0ldbl 
+brew_packages:
+    - gsl
 r_packages:
     - Rcpp
     - RcppGSL
