@@ -9,7 +9,8 @@ Depends:
     R (>= 3.0)
 Imports: 
     Rcpp,
-    stats4
+    stats4,
+    MASS
 LinkingTo: 
     Rcpp
 License: GPL-3

@@ -21,19 +21,27 @@
 
 
 rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
+    nloci <- length(start)
+    if(length(Ve==1) & nloci > 1){
+        idm <- diag(length(start))
+        diag(idm) <- Ve
+        Ve <- idm
+    }
     starting_fitness <- FUN(start)
     k <- rpois(n, Ut)
     experimental_variance <- rnorm(n, 0,Ve)
+
     mutate <- function(k){
         if(k==0){
            return(start)
         }
         else{
-            moves <- rowSums(replicate(k, rnorm(length(start), 0, sqrt(Vm))))
+            mutations <- MASS::mvrnorm(k, rep(0, nloci), Ve)
+            moves <- if(k==1) sum(mutations) else colSums(mutations)
             return(start + moves)
         }
     }
-    new_positions <- vapply(k, mutate, FUN.VALUE=numeric(length(start)))
+    new_positions <- vapply(k, mutate, FUN.VALUE=numeric(nloci))
     ending_fitnesses <- apply(new_positions, 2, FUN) + experimental_variance
     return( ending_fitnesses - starting_fitness)
 }
