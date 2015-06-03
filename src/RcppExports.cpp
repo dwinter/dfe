@@ -5,62 +5,65 @@
 
 using namespace Rcpp;
 
+// gma_gamma_known
+double gma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k);
+RcppExport SEXP dfe_gma_gamma_known(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::vector<double> >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type k(kSEXP);
+    __result = Rcpp::wrap(gma_gamma_known(obs, shape, rate, Ve, k));
+    return __result;
+END_RCPP
+}
 // dma_gamma
-double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, double Ut, bool log = true);
+double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, double Ut, bool log);
 RcppExport SEXP dfe_dma_gamma(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< std::vector<double> >::type obs(obsSEXP );
-        Rcpp::traits::input_parameter< double >::type shape(shapeSEXP );
-        Rcpp::traits::input_parameter< double >::type rate(rateSEXP );
-        Rcpp::traits::input_parameter< double >::type Ve(VeSEXP );
-        Rcpp::traits::input_parameter< double >::type Ut(UtSEXP );
-        Rcpp::traits::input_parameter< bool >::type log(logSEXP );
-        double __result = dma_gamma(obs, shape, rate, Ve, Ut, log);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::vector<double> >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< double >::type Ut(UtSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    __result = Rcpp::wrap(dma_gamma(obs, shape, rate, Ve, Ut, log));
+    return __result;
 END_RCPP
 }
 // dma_normal
-double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log = true);
+double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log);
 RcppExport SEXP dfe_dma_normal(SEXP obsSEXP, SEXP aSEXP, SEXP VaSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< NumericVector >::type obs(obsSEXP );
-        Rcpp::traits::input_parameter< double >::type a(aSEXP );
-        Rcpp::traits::input_parameter< double >::type Va(VaSEXP );
-        Rcpp::traits::input_parameter< double >::type Ve(VeSEXP );
-        Rcpp::traits::input_parameter< double >::type Ut(UtSEXP );
-        Rcpp::traits::input_parameter< bool >::type log(logSEXP );
-        double __result = dma_normal(obs, a, Va, Ve, Ut, log);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type Va(VaSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< double >::type Ut(UtSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    __result = Rcpp::wrap(dma_normal(obs, a, Va, Ve, Ut, log));
+    return __result;
 END_RCPP
 }
 // grad_normal
 NumericVector grad_normal(NumericVector obs, double a, double Va, double Ve, double Ut);
 RcppExport SEXP dfe_grad_normal(SEXP obsSEXP, SEXP aSEXP, SEXP VaSEXP, SEXP VeSEXP, SEXP UtSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< NumericVector >::type obs(obsSEXP );
-        Rcpp::traits::input_parameter< double >::type a(aSEXP );
-        Rcpp::traits::input_parameter< double >::type Va(VaSEXP );
-        Rcpp::traits::input_parameter< double >::type Ve(VeSEXP );
-        Rcpp::traits::input_parameter< double >::type Ut(UtSEXP );
-        NumericVector __result = grad_normal(obs, a, Va, Ve, Ut);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type Va(VaSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< double >::type Ut(UtSEXP);
+    __result = Rcpp::wrap(grad_normal(obs, a, Va, Ve, Ut));
+    return __result;
 END_RCPP
 }

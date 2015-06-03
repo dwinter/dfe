@@ -6,6 +6,16 @@
 #' @param shape, numeric, shape of gamma distribution
 #' @param rate, numeric, rate of gamma distribution
 #' @param Ve, numeric, experimental variance
+#' @param k, numeric, vector of knonw mutation counts
+gma_gamma_known <- function(obs, shape, rate, Ve, k) {
+    .Call('dfe_gma_gamma_known', PACKAGE = 'dfe', obs, shape, rate, Ve, k)
+}
+
+#' Density function of gamma dfe
+#' @param obs, numeric, observed fitnesses
+#' @param shape, numeric, shape of gamma distribution
+#' @param rate, numeric, rate of gamma distribution
+#' @param Ve, numeric, experimental variance
 #' @param Ut, numeric, mutation rate
 #' @param log, boolean, return log-liklihood (default=TRUE)
 #' @export

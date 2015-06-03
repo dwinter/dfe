@@ -27,6 +27,45 @@ double integrand(double x, void * p){
     return(gsl_ran_gaussian_pdf((w-x), sigma) * gsl_ran_gamma_pdf(x, k_alpha,1/beta));
 }
 
+
+//' Density function of gamma dfe
+//' @param obs, numeric, observed fitnesses
+//' @param shape, numeric, shape of gamma distribution
+//' @param rate, numeric, rate of gamma distribution
+//' @param Ve, numeric, experimental variance
+//' @param k, numeric, vector of knonw mutation counts
+// [[Rcpp::export]]
+double gma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k){
+    gsl_set_error_handler_off ();
+    double res = 0;
+    double convolve;
+    double int_error;
+    int err_code = 0;
+    gsl_integration_workspace* ws = gsl_integration_workspace_alloc(10000);
+    for(size_t i = 0; i < obs.size(); i++){
+        if(k[i] == 0){
+             //No mutation, what's likelihood given known experimental error?
+             //Not sure we shuoldn't just skip these -- no mutation then we know
+             //nothing about the DFE?
+             res += std::log(gsl_ran_gaussian_pdf(obs[i], sqrt(Ve))); 
+        }
+        else{
+            gsl_function F;
+            convolve_params p = {obs[i], Ve, shape, rate, &k[i]};
+            F.function = &integrand;
+            F.params = &p;
+            err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
+            res += std::log(convolve);
+        }
+    }
+    return(res);
+}
+
+           
+
+
+
+
 //' Density function of gamma dfe
 //' @param obs, numeric, observed fitnesses
 //' @param shape, numeric, shape of gamma distribution
