@@ -48,7 +48,7 @@ rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
     f <- function(m) {
         n <- length(m)
         between_line <- rnorm(n,0,sqrt(Ve))
-        between_line +  rgamma(n, k*shape, rate)
+        between_line +  rgamma(n, m*shape, rate)
     }
     rma_known_base(k, p_neutral, f)
 }
