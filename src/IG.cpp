@@ -4,7 +4,7 @@
 #include <gsl/gsl_errno.h>
 
 #include <Rcpp.h>
-
+#include "base.h"
 
 using namespace Rcpp;
 
@@ -37,6 +37,68 @@ double ig_integrand(double x, void * p){
     return(gsl_ran_gaussian_pdf((w-x), sigma) * dIG(x, k_mean, k_shape));
 }
 
+
+
+double dma_IG_one_mutation(double obs, double mean, double shape, double Ve, int k, bool log= true){
+    double convolve;
+    if(k == 0){
+       convolve = gsl_ran_gaussian_pdf(obs, sqrt(Ve)); 
+    } else {
+        double int_error;
+        int err_code = 0;
+        gsl_integration_workspace* ws = gsl_integration_workspace_alloc(10000);
+        gsl_function F;
+        ig_convolve_params p = {obs, Ve, mean, shape,  &k};
+        F.function = &ig_integrand;
+        F.params = &p;
+        err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
+    }
+    if(log){
+        return(std::log(convolve));
+    }
+    return(convolve);
+}
+
+
+//' Density function of gamma dfe with known mutation counts
+//' @param obs, numeric, observed fitnesses
+//' @param mean, numeric, rate of inverse gaussian DFE
+//' @param shape, numeric, shape of inverse gaussian DFE
+//' @param Ve, numeric, experimental variance
+//' @param k, numeric, vector of knonw mutation counts
+//' @param p_neutral numeric,proportion of all mutations that have no effect
+//' @param log logical return log-liklihood (defaults to true)
+//' @return numeric (log-) liklihood of the specfified model and data
+//' @examples
+//' set.seed(123)
+//' mu <- rpois(50, 10)
+//' w <- rma_known_IG(shape=1, mean=0.1, Ve=0.01, k=mu,p_neutral=0.7) 
+//' dma_IG_known(w, shape=1, mean=0.1, Ve=0.01, k=mu, p_neutral=0.75)
+//' dma_IG_known(w, shape=1, mean=0.1, Ve=0.01, k=mu, p_neutral=0.65)
+// [[Rcpp::export]]
+
+double dma_IG_known(std::vector<double> obs, double mean, double shape, double Ve, Rcpp::IntegerVector k, double p_neutral, bool log = true){
+    double lik = 0;
+    if(p_neutral == 0.0){
+        for(size_t i = 0; i < obs.size(); i++){
+            lik += dma_IG_one_mutation(obs[i], mean, shape, Ve, k[i], true);
+        }
+    } else {
+        ProbMap mu_probs = cache_mutation_probs(k, p_neutral);
+        double sample_lik;
+        for(size_t i = 0; i < obs.size(); i++){
+            sample_lik = 0;
+            for(size_t j = 0; j <= k[i]; j++){
+                sample_lik +=  dma_IG_one_mutation(obs[i], mean, shape,  Ve, k[i]-j, false) * mu_probs[ k[i] ][j];
+            }
+        lik += std::log(sample_lik);
+        }
+    }
+    if(log){
+        return(lik);
+    }
+    return(exp(lik));        
+}
 
 //' Density function for inverse-gaussian dfe
 //' @param obs numeric, observed fitnesses
@@ -97,35 +159,4 @@ double dma_IG(NumericVector obs, double mean, double shape, double Ve, double Ut
 
 
 
-//' Density function of gamma dfe
-//' @param obs, numeric, observed fitnesses
-//' @param mean, numeric, mean effect size of DFE
-//' @param shape, numeric, shape of DFE
-//' @param Ve, numeric, experimental variance
-//' @param k, numeric, vector of knonw mutation counts
-// [[Rcpp::export]]
-double dma_IG_known(std::vector<double> obs, double mean, double shape, double Ve, std::vector<int> k){
-    gsl_set_error_handler_off ();
-    double res = 0;
-    double convolve;
-    double int_error;
-    int err_code = 0;
-    gsl_integration_workspace* ws = gsl_integration_workspace_alloc(10000);
-    for(size_t i = 0; i < obs.size(); i++){
-        if(k[i] == 0){
-             //No mutation, what's likelihood given known experimental error?
-             //Not sure we shuoldn't just skip these -- no mutation then we know
-             //nothing about the DFE?
-             res += std::log( exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve)) ); 
-        }
-        else{
-            gsl_function F;
-            ig_convolve_params p = {obs[i], Ve, mean, shape,  &k[i]};
-            F.function = &ig_integrand;
-            F.params = &p;
-            err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
-            res += std::log(convolve);
-        }
-    }
-    return(res);
-}
+
