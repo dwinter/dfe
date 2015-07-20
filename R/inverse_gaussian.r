@@ -27,6 +27,15 @@ rma_IG <- function(n, mean, shape, Ve, Ut){
     ifelse(k > 0, between_line + mutations, between_line)    
 }
 
+rma_known_IG <- function(mean, shape, Ve, k, p_neutral){
+    f <- function(m){
+        err <- rnorm(length(m), 0, sqrt(Ve))
+        mu <- rinverse_gaussian(length(m), mean*m, shape*m**2)
+        ifelse(m > 0, err+mu, err)
+    }
+    rma_known_base(k, p_neutral, f)
+}
+
 
 #'@export
 fit_ma_IG <- function(obs, fixed=list(), start=list(), verbose=FALSE){

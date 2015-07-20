@@ -1,22 +1,22 @@
 
-##' Simulate fitness effects under of normal model 
-##'
-##' This function simulates fitness effects under a model in which the fitness
-##' distribution of mutations is normally distributed
-##'
-##'@export
-##'@param n numeric, number of lines to simulate
-##'@param a numeric,  mean fitness of mutations
-##'@param Va numeric, variance in fitness of mutations
-##'@param Ve numeric, envrionmental variance 
-##'@param Ut numeric, expected number of mutations over the length of the
-##' experiment
-##'@return numeric, a vector of fitnesses
-##'@examples
-##' set.seed(123)
-##' w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
-##' dma_normal(w, 0.1, 0.01,0.01, 1)
-##' dma_normal(w, 0.1, 0.01,0.01, 3)
+#' Simulate fitness effects under of normal model 
+#'
+#' This function simulates fitness effects under a model in which the fitness
+#' distribution of mutations is normally distributed
+#'
+#'@export
+#'@param n numeric, number of lines to simulate
+#'@param a numeric,  mean fitness of mutations
+#'@param Va numeric, variance in fitness of mutations
+#'@param Ve numeric, envrionmental variance 
+#'@param Ut numeric, expected number of mutations over the length of the
+#' experiment
+#'@return numeric, a vector of fitnesses
+#'@examples
+#' set.seed(123)
+#' w <- rma_normal(20, 0.1, 0.01, 0.01, 1)
+#' dma_normal(w, 0.1, 0.01,0.01, 1)
+#' dma_normal(w, 0.1, 0.01,0.01, 3)
 
 
 rma_normal <- function(n, a, Va, Ve, Ut){
@@ -24,6 +24,30 @@ rma_normal <- function(n, a, Va, Ve, Ut){
     rnorm(n, k*a, sqrt(k*Va+Ve))
 }
 
+
+
+#' Simulate fitness effects ith a known number of mutations per line and a Normal DFE
+#'
+#' This function simulates fitness effects under a model in which the fitness
+#' distribution of mutations is normally distributed
+#'
+#'@export
+#'@param a numeric,  mean fitness of mutations
+#'@param Va numeric, variance in fitness of mutations
+#'@param Ve numeric, envrionmental variance 
+#'@param k integer, total number of mutations for each line
+#'@param p_neutral numeric, (global) proportion of those mutation with no fitness effect
+#'@return numeric, a vector of fitnesses
+#'@examples
+#' set.seed(123)
+#' k <- rpois(20,9)
+#' w <- rma_normal(a=0.1, Va=0.01, Ve=0.01, k=k, p_neutral=0.7)
+#' mean(w)
+
+rma_known_normal <- function(a, Va, Ve, k, p_neutral){
+    f <- function(m) rnorm(length(m), m*a, sqrt(m*Va+Ve))
+    rma_known_base(k, p_neutral, f)
+}
 
 
 #' Method of moments estimators for the normally distributed DFE

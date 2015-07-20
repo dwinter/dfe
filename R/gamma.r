@@ -1,28 +1,61 @@
-##NOTE: FOR CONSITENCY THIS FUNCTION SHOULD BE PARAMTERISED WITH
-## MEAN AND VARIANCE OF FITNESS DISTRIBUTION IN FUTURE
-##
-##' Simulate fitness effects under of Gamma model 
-##'
-##' This function simulates fitness effects under a model in which the fitness
-##' distribution of mutations takes a Gamma distribution
-##'
-##'@export
-##'@param n numeric, number of lines to simulate
-##'@param shape numeric,  shape parameter for Gamma
-##'@param rate numeric, Scale paramater for Gamma
-##'@param Ve numeric, envrionmental variance 
-##'@param Ut numeric, expected number of mutations over the length of the
-##' experiment
-##'@return numeric, a vector of fitnesses
-##'@examples
-##' set.seed(123)
-##' w <- rma_gamma(20, shape=0.1, rate=2, Ve=1e-4, Ut=3)
-##' dma_gamma(obs=w, shape=0.1,rate= 2, Ve=1e-4, Ut = 3)
+
+
+#' Simulate fitness effects under of Gamma model 
+#'
+#' This function simulates fitness effects under a model in which the fitness
+#' distribution of mutations takes a Gamma distribution
+#'
+#'@export
+#'@param n numeric, number of lines to simulate
+#'@param shape numeric,  shape parameter for Gamma
+#'@param rate numeric, Scale paramater for Gamma
+#'@param Ve numeric, envrionmental variance 
+#'@param Ut numeric, expected number of mutations over the length of the
+#' experiment
+#'@return numeric, a vector of fitnesses
+#'@examples
+#' set.seed(123)
+#' w <- rma_gamma(20, shape=0.1, rate=2, Ve=1e-4, Ut=3)
+#' dma_gamma(obs=w, shape=0.1,rate= 2, Ve=1e-4, Ut = 3)
 rma_gamma <- function(n, shape,rate, Ve, Ut){
     k <- rpois(n, Ut)
     between_line <- rnorm(n,0,sqrt(Ve))
     between_line +  rgamma(n, k*shape, rate)
 }
+
+
+
+
+#' Simulate fitness effects with a known number of mutations and Gamma DFE
+#'
+#' This function simulates fitness effects under a model in which the fitness
+#' distribution of mutations takes a Gamma distribution
+#'
+#'@export
+#'@param n numeric, number of lines to simulate
+#'@param shape numeric,  shape parameter for Gamma
+#'@param rate numeric, Scale paramater for Gamma
+#'@param Ve numeric, envrionmental variance 
+#'@param k integer, total number of mutations in each line
+#'@param p_neutral
+#'@return w, numeric simulate fitness of each line
+#'@examples
+#' k <- rpois(20, 9)
+#' w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4))
+#' mean(w)
+
+rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
+    f <- function(m) {
+        n <- length(m)
+        between_line <- rnorm(n,0,sqrt(Ve))
+        between_line +  rgamma(n, k*shape, rate)
+    }
+    rma_known_base(k, p_neutral, f)
+}
+
+
+
+
 
 
 #' Calculate probability density of a set of fitness measures under a
