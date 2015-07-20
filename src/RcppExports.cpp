@@ -71,6 +71,23 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// dma_normal_known
+double dma_normal_known(NumericVector obs, double a, double Va, double Ve, IntegerVector k, double p_neutral, bool log);
+RcppExport SEXP dfe_dma_normal_known(SEXP obsSEXP, SEXP aSEXP, SEXP VaSEXP, SEXP VeSEXP, SEXP kSEXP, SEXP p_neutralSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type Va(VaSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< double >::type p_neutral(p_neutralSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    __result = Rcpp::wrap(dma_normal_known(obs, a, Va, Ve, k, p_neutral, log));
+    return __result;
+END_RCPP
+}
 // dma_normal
 double dma_normal(NumericVector obs, double a, double Va, double Ve, double Ut, bool log);
 RcppExport SEXP dfe_dma_normal(SEXP obsSEXP, SEXP aSEXP, SEXP VaSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
