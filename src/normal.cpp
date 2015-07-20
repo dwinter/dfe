@@ -1,6 +1,50 @@
 #include <Rcpp.h>
+#include "base.h"
 
 using namespace Rcpp;
+
+
+double dma_normal_one_mutation(double obs, double a, double Va, double Ve, int k, bool log = false){ 
+    //starting values for prob and res are for special case of k=0
+    double res =  (  exp( -( pow(obs-k*a,2)/(2*(Ve+ k*Va)) )) / (sqrt(2*M_PI) * sqrt(k * Va + Ve)) ) ;
+    if(log){
+        return(std::log(res));
+    }
+    return(res);
+}
+
+//' Density function for normal dfe with known mutations
+//' @param obs numeric, observed fitnesses
+//' @param a numeric, mean effect-size of mutations
+//' @param Va numeric variance of dfe
+//' @param Ve numeric variance of experimental system
+//' @param k integer, vector of mutation counts 
+//' @param p_nuetral, global proportion of neutral mutations
+//' @param log boolean return log liklihood (default=TRUE)
+//[[Rcpp::export]]
+double dma_normal_known(NumericVector obs, double a, double Va, double Ve, IntegerVector k,double p_neutral, bool log = false){ 
+    double lik = 0;
+    if(p_neutral == 0.0){
+        for(size_t i = 0; i < obs.size(); i++){
+            lik += dma_normal_one_mutation(obs[i], a, Va, Ve, k[i], true);
+        }
+    } else {
+        ProbMap mu_probs = cache_mutation_probs(k, p_neutral);
+        double sample_lik;
+        for(size_t i = 0; i < obs.size(); i++){
+            sample_lik = 0;
+            for(size_t j = 0; j <= k[i]; j++){
+                sample_lik += dma_normal_one_mutation(obs[i], a, Va, Ve, k[i]-j, false) * mu_probs[ k[i] ][j];
+            }
+            lik += std::log(sample_lik);
+        }
+    }
+    if(log){
+        return(lik);
+   }
+    return(exp(lik));
+}
+
 
 //' Density function for normal dfe
 //' @param obs numeric, observed fitnesses
