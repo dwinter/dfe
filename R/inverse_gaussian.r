@@ -6,7 +6,7 @@ dinverse_gaussian <- function(x, mean, shape){
 }
 
 #'@export
-rinverse_gaussian <- function(n, mean, shape){
+rinverse_gaussian <- function(n, mean, shape ){
     u <- mean
     y <- rnorm(n, 0, 1)**2
 #    left <- mean + (mean*mean*y)/(2*shape) 
@@ -28,25 +28,7 @@ rma_IG <- function(n, mean, shape, Ve, Ut){
 }
 
 
-#TODO vectorize this and NIG convolution (maybe in C++)
-.dma_IG_one <- function(w, mean, shape, Ve, Ut, log=FALSE){
-    p_mu <- mu_scan(Ut)
-    n <- length(p_mu) -1
-    res <-  sum(sapply(0:n,  dfe:::NIG_convolution, z=w, mean=mean, shape=shape, Ve=Ve, verbose=FALSE) * p_mu)
-    if(log){
-        return(log(res))
-    }
-    res
-}
-
-dma_IG<- function(w, mean, shape, Ve, Ut, log=FALSE){
-    res <- sum(vapply(w, .dma_IG_one, mean=mean, shape=shape, Ve=Ve, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
-    if(log){
-        return(res)
-    }
-    exp(res)
-}
-
+#'@export
 fit_ma_IG <- function(obs, fixed=list(), start=list(), verbose=FALSE){
     all_args <- list("mean", "shape", "Ve","Ut")
     known_args <- c(names(fixed), names(start))
@@ -72,18 +54,17 @@ fit_ma_IG <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 }
 
 
-
-NIG_convolution <- function(z, mean, shape, Ve, k, verbose=FALSE){
-    if(k==0){
-        return(dnorm(z, 0, sqrt(Ve)))
-    }
-    res <- integrate(
-      function(x,y) dnorm(y-x, 0, sqrt(Ve)) * dinverse_gaussian(x, mean=mean*k, shape=shape*k**2),
-      y=z, lower=0, upper=Inf, abs.tol=1e-7
-    )
-    if(verbose){
-        return(res)
-    }
-    res$value
-}
+#NIG_convolution <- function(z, mean, shape, Ve, k, verbose=FALSE){
+#    if(k==0){
+#        return(dnorm(z, 0, sqrt(Ve)))
+#    }
+#    res <- integrate(
+#      function(x,y) dnorm(y-x, 0, sqrt(Ve)) * dinverse_gaussian(x, mean=mean*k, shape=shape*k**2),
+#      y=z, lower=0, upper=Inf, abs.tol=1e-7
+#    )
+#    if(verbose){
+#        return(res)
+#    }
+#    res$value
+#}
 
