@@ -7,8 +7,17 @@
 #' @param rate, numeric, rate of gamma distribution
 #' @param Ve, numeric, experimental variance
 #' @param k, numeric, vector of knonw mutation counts
-dma_gamma_known <- function(obs, shape, rate, Ve, k) {
-    .Call('dfe_dma_gamma_known', PACKAGE = 'dfe', obs, shape, rate, Ve, k)
+#' @param p_neutral numeric,proportion of all mutations that have no effect
+#' @param log logical return log-liklihood (defaults to true)
+#' @return numeric (log-) liklihood of the specfified model and data
+#' @examples
+#' set.seed(123)
+#' mu <- rpois(50, 10)
+#' w <- rma_known_gamma(shape=1, rate=25, Ve=0.01, k=mu,p_neutral=0.7) 
+#' dma_gamma_known(w, shape=1, rate=25, Ve=0.01, k=mu, p_neutral=0.75)
+#' dma_gamma_known(w, shape=1, rate=25, Ve=0.01, k=mu, p_neutral=0.65)
+dma_gamma_known <- function(obs, shape, rate, Ve, k, p_neutral, log = TRUE) {
+    .Call('dfe_dma_gamma_known', PACKAGE = 'dfe', obs, shape, rate, Ve, k, p_neutral, log)
 }
 
 #' Density function of gamma dfe

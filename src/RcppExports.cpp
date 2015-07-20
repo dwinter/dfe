@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // dma_gamma_known
-double dma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k);
-RcppExport SEXP dfe_dma_gamma_known(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP kSEXP) {
+double dma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, Rcpp::IntegerVector k, double p_neutral, bool log);
+RcppExport SEXP dfe_dma_gamma_known(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP kSEXP, SEXP p_neutralSEXP, SEXP logSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -15,8 +15,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
     Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
-    Rcpp::traits::input_parameter< std::vector<int> >::type k(kSEXP);
-    __result = Rcpp::wrap(dma_gamma_known(obs, shape, rate, Ve, k));
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< double >::type p_neutral(p_neutralSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    __result = Rcpp::wrap(dma_gamma_known(obs, shape, rate, Ve, k, p_neutral, log));
     return __result;
 END_RCPP
 }
