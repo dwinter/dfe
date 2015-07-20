@@ -55,29 +55,6 @@ rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
 
 
 
-
-
-
-#' Calculate probability density of a set of fitness measures under a
-#' Normal-Gamma convolution model
-#'@param w numeric, observed data
-#'@param a numeric,  shape parameter for Gamma
-#'@param B numeric, Scale paramater for Gamma
-#'@param Ve numeric, envrionmental variance 
-#'@param Ut numeric, expected number of mutations over the length of the
-#'@param log boolean, return log liklihood
-#'@export
-#'@examples
-#' dma_gamma( c(0.1,0.01), 0.05, 2, 1e-4, 2)
-dma_gamma_r <- function(w, a, B, Ve, Ut, log=FALSE){
-    res <- sum(vapply(w, .dma_gamma, a=a, Ve=Ve, B=B, Ut=Ut, log=TRUE, FUN.VALUE=0.0))
-    if(log){
-        return(res)
-    }
-    return(exp(res))
-}
-
-
 #' Fit a MA-model with Gamma dfe
 #' @importFrom stats4 mle
 #' @param obs, numeric observed fitnesses
@@ -132,15 +109,7 @@ mom_ma_gamma <-function(obs, Ut, Ve){
 }
 
 
-.dma_gamma <- function(w, a,B,Ve,Ut, log=FALSE){
-    p_mu <- mu_scan(Ut)
-    n <- length(p_mu) -1
-    res <-  sum(sapply(0:n,  NG_convolution, z=w, a=a, B=B, Ve=Ve, verbose=FALSE) * p_mu)
-    if(log){
-        return(log(res))
-    }
-    return(res)
-}
+
   
 #' Get mean and variance of a Gamma distribution given shape and rate
 #' paramaters
@@ -151,23 +120,5 @@ moments_gamma <-function(shape, rate){
     return(c(mean=shape/rate, var=shape/(rate^2)))
 }
 
-
-NG_convolution <- function(z, a, Beta, Ve, k, verbose=FALSE){
-    if(k==0){#gamma distr undefined
-        cat( paste(k, dnorm(z, 0, sqrt(Ve)), sep="\t" ), "\n")
-        return( dnorm(z, 0, sqrt(Ve)) )
-    }
-    integrand <- function(x,y){
-        return(dnorm(y-x, 0, sqrt(Ve)) * dgamma(x, shape=k*a, rate=Beta))
-    }
-    res <- integrate(integrand, z, lower= 0, upper=Inf,  abs.tol=1e-7)
-    cat(paste(res$value, k, sep="\t"), "\n")
-    if(verbose){
-        return(res)
-    }
-    else{
-        return(res$value)
-    }
-}
 
 

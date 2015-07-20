@@ -89,8 +89,7 @@ double dma_gamma_known(std::vector<double> obs, double shape, double rate, doubl
     }
     return(exp(lik));        
 }
-
-        
+ 
            
 //' Density function of gamma dfe
 //' @param obs, numeric, observed fitnesses
