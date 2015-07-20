@@ -95,3 +95,37 @@ double dma_IG(NumericVector obs, double mean, double shape, double Ve, double Ut
     return(exp(final_result));
 }
 
+
+
+//' Density function of gamma dfe
+//' @param obs, numeric, observed fitnesses
+//' @param mean, numeric, mean effect size of DFE
+//' @param shape, numeric, shape of DFE
+//' @param Ve, numeric, experimental variance
+//' @param k, numeric, vector of knonw mutation counts
+// [[Rcpp::export]]
+double dma_IG_known(std::vector<double> obs, double mean, double shape, double Ve, std::vector<int> k){
+    gsl_set_error_handler_off ();
+    double res = 0;
+    double convolve;
+    double int_error;
+    int err_code = 0;
+    gsl_integration_workspace* ws = gsl_integration_workspace_alloc(10000);
+    for(size_t i = 0; i < obs.size(); i++){
+        if(k[i] == 0){
+             //No mutation, what's likelihood given known experimental error?
+             //Not sure we shuoldn't just skip these -- no mutation then we know
+             //nothing about the DFE?
+             res += std::log( exp(-(pow(obs[i],2)/(2*Ve))) /  (sqrt(2*M_PI) * sqrt(Ve)) ); 
+        }
+        else{
+            gsl_function F;
+            ig_convolve_params p = {obs[i], Ve, mean, shape,  &k[i]};
+            F.function = &ig_integrand;
+            F.params = &p;
+            err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
+            res += std::log(convolve);
+        }
+    }
+    return(res);
+}
