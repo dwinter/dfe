@@ -7,8 +7,8 @@
 #' @param rate, numeric, rate of gamma distribution
 #' @param Ve, numeric, experimental variance
 #' @param k, numeric, vector of knonw mutation counts
-gma_gamma_known <- function(obs, shape, rate, Ve, k) {
-    .Call('dfe_gma_gamma_known', PACKAGE = 'dfe', obs, shape, rate, Ve, k)
+dma_gamma_known <- function(obs, shape, rate, Ve, k) {
+    .Call('dfe_dma_gamma_known', PACKAGE = 'dfe', obs, shape, rate, Ve, k)
 }
 
 #' Density function of gamma dfe
@@ -21,6 +21,28 @@ gma_gamma_known <- function(obs, shape, rate, Ve, k) {
 #' @export
 dma_gamma <- function(obs, shape, rate, Ve, Ut, log = TRUE) {
     .Call('dfe_dma_gamma', PACKAGE = 'dfe', obs, shape, rate, Ve, Ut, log)
+}
+
+#' Density function for inverse-gaussian dfe
+#' @param obs numeric, observed fitnesses
+#' @param mean numeric, mean effect-size of mutations
+#' @param shape numeric, shape of underlying DFE
+#' @param Ve numeric variance of experimental system
+#' @param Ut numeric mutation rate
+#' @param log boolean return log liklihood (default=TRUE)
+#' @export
+dma_IG <- function(obs, mean, shape, Ve, Ut, log = TRUE) {
+    .Call('dfe_dma_IG', PACKAGE = 'dfe', obs, mean, shape, Ve, Ut, log)
+}
+
+#' Density function of gamma dfe
+#' @param obs, numeric, observed fitnesses
+#' @param mean, numeric, mean effect size of DFE
+#' @param shape, numeric, shape of DFE
+#' @param Ve, numeric, experimental variance
+#' @param k, numeric, vector of knonw mutation counts
+dma_IG_known <- function(obs, mean, shape, Ve, k) {
+    .Call('dfe_dma_IG_known', PACKAGE = 'dfe', obs, mean, shape, Ve, k)
 }
 
 #' Density function for normal dfe

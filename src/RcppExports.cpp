@@ -5,9 +5,9 @@
 
 using namespace Rcpp;
 
-// gma_gamma_known
-double gma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k);
-RcppExport SEXP dfe_gma_gamma_known(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP kSEXP) {
+// dma_gamma_known
+double dma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k);
+RcppExport SEXP dfe_dma_gamma_known(SEXP obsSEXP, SEXP shapeSEXP, SEXP rateSEXP, SEXP VeSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -16,7 +16,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
     Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
     Rcpp::traits::input_parameter< std::vector<int> >::type k(kSEXP);
-    __result = Rcpp::wrap(gma_gamma_known(obs, shape, rate, Ve, k));
+    __result = Rcpp::wrap(dma_gamma_known(obs, shape, rate, Ve, k));
     return __result;
 END_RCPP
 }
@@ -33,6 +33,37 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type Ut(UtSEXP);
     Rcpp::traits::input_parameter< bool >::type log(logSEXP);
     __result = Rcpp::wrap(dma_gamma(obs, shape, rate, Ve, Ut, log));
+    return __result;
+END_RCPP
+}
+// dma_IG
+double dma_IG(NumericVector obs, double mean, double shape, double Ve, double Ut, bool log);
+RcppExport SEXP dfe_dma_IG(SEXP obsSEXP, SEXP meanSEXP, SEXP shapeSEXP, SEXP VeSEXP, SEXP UtSEXP, SEXP logSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< double >::type Ut(UtSEXP);
+    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
+    __result = Rcpp::wrap(dma_IG(obs, mean, shape, Ve, Ut, log));
+    return __result;
+END_RCPP
+}
+// dma_IG_known
+double dma_IG_known(std::vector<double> obs, double mean, double shape, double Ve, std::vector<int> k);
+RcppExport SEXP dfe_dma_IG_known(SEXP obsSEXP, SEXP meanSEXP, SEXP shapeSEXP, SEXP VeSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< std::vector<double> >::type obs(obsSEXP);
+    Rcpp::traits::input_parameter< double >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type Ve(VeSEXP);
+    Rcpp::traits::input_parameter< std::vector<int> >::type k(kSEXP);
+    __result = Rcpp::wrap(dma_IG_known(obs, mean, shape, Ve, k));
     return __result;
 END_RCPP
 }

@@ -35,7 +35,7 @@ double integrand(double x, void * p){
 //' @param Ve, numeric, experimental variance
 //' @param k, numeric, vector of knonw mutation counts
 // [[Rcpp::export]]
-double gma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k){
+double dma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, std::vector<int> k){
     gsl_set_error_handler_off ();
     double res = 0;
     double convolve;
@@ -62,10 +62,6 @@ double gma_gamma_known(std::vector<double> obs, double shape, double rate, doubl
 }
 
            
-
-
-
-
 //' Density function of gamma dfe
 //' @param obs, numeric, observed fitnesses
 //' @param shape, numeric, shape of gamma distribution
