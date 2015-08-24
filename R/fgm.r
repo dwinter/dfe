@@ -20,14 +20,14 @@
 #' mean(w)
 
 
-rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
+rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=gaussian_fitness){
     nloci <- length(start)
     if(length(Ve==1) & nloci > 1){
         idm <- diag(length(start))
         diag(idm) <- Ve
         Ve <- idm
     }
-    starting_fitness <- FUN(start)
+#    starting_fitness <- FUN(start)
     k <- rpois(n, Ut)
     experimental_variance <- rnorm(n, 0,Ve)
 
@@ -42,9 +42,21 @@ rma_FGM <- function(n, start, Vm, Ve, Ut, FUN=sq_dist){
         }
     }
     new_positions <- vapply(k, mutate, FUN.VALUE=numeric(nloci))
-    ending_fitnesses <- apply(new_positions, 2, FUN) + experimental_variance
-    return( ending_fitnesses - starting_fitness)
+    ending_fitnesses <- apply(new_positions, 2, FUN, start=start) + experimental_variance
+    #return( ending_fitnesses - starting_fitness)
+    -ending_fitnesses
 }
+
+gaussian_fitness <- function(coords, start, optimum="origin"){
+    if(optimum=="origin"){
+        optimum <- rep(0, length(coords))
+    }
+    Z <- dist(rbind(optimum, start))[1]
+    dZ <- Z - dist(rbind(optimum, coords))[1]
+    exp( -(Z-dZ)^2 / 2 ) - exp(-Z^2/2)
+}
+
+
 
 sq_dist <- function(coords, optimum="origin"){
     if(optimum=="origin"){
