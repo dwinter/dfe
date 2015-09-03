@@ -4,7 +4,7 @@
 \alias{mom_ma_normal}
 \title{Method of moments estimators for the normally distributed DFE}
 \usage{
-mom_ma_normal(obs, Ve)
+mom_ma_normal(obs, Ve, Ut = NULL)
 }
 \arguments{
 \item{obs}{observed fitness values}

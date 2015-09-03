@@ -4,7 +4,7 @@
 \alias{rma_FGM}
 \title{Simulate fitness effects under fishers geometric model}
 \usage{
-rma_FGM(n, start, Vm, Ve, Ut, FUN = sq_dist)
+rma_FGM(n, start, Vm, Ve, Ut, FUN = gaussian_fitness)
 }
 \arguments{
 \item{n}{numeric, number of lines to simulate}
