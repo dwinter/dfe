@@ -61,16 +61,21 @@ rma_known_normal <- function(a, Va, Ve, k, p_neutral){
 #' set.seed(123)
 #' w <- rma_normal(n=20, a=0.1, Va=0.01, Ve=0.01,Ut=1)
 #' mom_ma_normal(w, 0.01)
-mom_ma_normal <- function(obs, Ve){
+mom_ma_normal <- function(obs, Ve, Ut=NULL){
     first  <- mean(obs)
     second <- var(obs) - Ve
-    third  <- mean( (obs - mean(obs))^3)
-    A <- sqrt(9 * second**2 - 8 * third * first)
-    c(a  = ((3*second)  - A) / (4*first), 
-      Va = (((second * A)/first) - (3*second**2/first) + (4*third) ) / (8*first),
-      Ut = (first * A + 3 * second * first) / (2 * third) )
-    
+    if(is.null(Ut)){
+        third  <- mean( (obs - mean(obs))^3)
+        
+        A <- sqrt(9 * second**2 - 8 * third * first)
+        return ( c(a  = ((3*second)  - A) / (4*first), 
+                   Va = (((second * A)/first) - (3*second**2/first) + (4*third) ) / (8*first),
+                   Ut = (first * A + 3 * second * first) / (2 * third) )
+        )
+    }
+    c(a = first/Ut, Va= (Ut * second - first^2)/Ut^2)
 }
+
 
 
 
