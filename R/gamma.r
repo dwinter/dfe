@@ -101,7 +101,7 @@ fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 #' @param Ve, numeric, experimental variance
 #' @param Ut, numeric, mutation rate
 #' @export
-mom_ma_gamma <-function(obs, Ut, Ve){
+mom_ma_gamma <-function(obs, Ve, Ut){
     first <- mean(obs)
     second <- var(obs)
     denom <- first**2 - Ut * second   + Ut *Ve
