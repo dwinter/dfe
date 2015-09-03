@@ -36,6 +36,14 @@ rma_known_IG <- function(mean, shape, Ve, k, p_neutral){
     rma_known_base(k, p_neutral, f)
 }
 
+#' @export 
+mom_ma_IG <- function(w, Ve, Ut){
+    first <- mean(w)
+    second <- var(w) - Ve
+    c(mean  = first/Ut, 
+      shape = first^3 / (Ut * (Ut*second-first^2)) 
+    )
+}
 
 #'@export
 fit_ma_IG <- function(obs, fixed=list(), start=list(), verbose=FALSE){
