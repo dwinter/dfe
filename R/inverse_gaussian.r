@@ -18,7 +18,7 @@ rinverse_gaussian <- function(n, mean, shape ){
     ifelse(z <= mean/(mean+x), x, mean**2/x)
 }
  
-
+#'@export
 rma_IG <- function(n, mean, shape, Ve, Ut){
     k <- rpois(n,Ut)
     between_line <- rnorm(n, 0, sqrt(Ve))
@@ -27,6 +27,7 @@ rma_IG <- function(n, mean, shape, Ve, Ut){
     ifelse(k > 0, between_line + mutations, between_line)    
 }
 
+#'@export 
 rma_known_IG <- function(mean, shape, Ve, k, p_neutral){
     f <- function(m){
         err <- rnorm(length(m), 0, sqrt(Ve))

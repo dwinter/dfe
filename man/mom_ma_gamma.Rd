@@ -4,14 +4,14 @@
 \alias{mom_ma_gamma}
 \title{M.O.M estimate of gamma model with known mutation rate}
 \usage{
-mom_ma_gamma(obs, Ut, Ve)
+mom_ma_gamma(obs, Ve, Ut)
 }
 \arguments{
 \item{obs,}{numeric, vector of observed fitnesses}
 
-\item{Ut,}{numeric, mutation rate}
-
 \item{Ve,}{numeric, experimental variance}
+
+\item{Ut,}{numeric, mutation rate}
 }
 \description{
 M.O.M estimate of gamma model with known mutation rate
