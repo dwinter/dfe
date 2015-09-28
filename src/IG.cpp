@@ -142,6 +142,7 @@ double dma_IG(NumericVector obs, double mean, double shape, double Ve, double Ut
             res[i] += result * mu_prob;
             if(err){
                 Rf_warning("GSL intergration returned error %d", err);
+                return std::numeric_limits<double>::quiet_NaN();
 //                std::cout << err << std::endl;
             }
         }

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <limits>
 
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_integration.h>
@@ -133,6 +134,7 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
             res[i] += result * mu_prob;
             if(err){
                 Rf_warning("GSL intergration returned error %d", err);
+                return std::numeric_limits<double>::quiet_NaN();
 //                std::cout << err << std::endl;
             }
         }
