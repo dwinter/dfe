@@ -41,7 +41,7 @@ rma_gamma <- function(n, shape,rate, Ve, Ut){
 #'@return w, numeric simulate fitness of each line
 #'@examples
 #' k <- rpois(20, 9)
-#' w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4))
+#' w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4)
 #' mean(w)
 
 rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
