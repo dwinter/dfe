@@ -41,7 +41,7 @@ rma_gamma <- function(n, shape,rate, Ve, Ut){
 #'@return w, numeric simulate fitness of each line
 #'@examples
 #' k <- rpois(20, 9)
-#' w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4))
+#' w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4)
 #' mean(w)
 
 rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
@@ -56,7 +56,7 @@ rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
 
 
 #' Fit a MA-model with Gamma dfe
-#' @importFrom stats4 mle
+#' @importFrom optimx optimx
 #' @param obs, numeric observed fitnesses
 #' @param verbose, boolean, print values at each execution (default TRUE)
 #' @param shape numeric,  shape parameter for Gamma
@@ -70,32 +70,34 @@ rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
 #' Note, all paramaters must be given either a fixed or a starting value
 #'@export
 
-fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
-    all_args <- c("shape", "rate", "Ve", "Ut")
-    known_args <- c( names(fixed), names(start) )  
-    if(!all(all_args %in% known_args)){
-       msg <- paste("Must set fixed or starting value for following params\n",
-                    all_args[!(all_args %in% known_args )])
-       stop(msg)
-    }
-    lower_bound <- c(shape= 0, rate=0, Ve=0, Ut=0)
-    Q <- function(shape, rate, Ve, Ut){
-        if(verbose){
-            params <- match.call()
-            print (sapply(as.list(params)[2:5], round, 4))
-        }
-        if(any( c(shape, rate, Ve, Ut) <= 0)){
-           return(999999)
-        }
-        -dma_gamma(obs, shape, rate, Ve, Ut,log=TRUE)
-    }
-      
-    mle(Q, start=start, fixed=fixed,
-        method="L-BFGS-B",
-        lower=rep(1e-6,length(start)))
-        
-}
 
+fit_ma_gamma <-  make_dfe_fitting_fxn(dma_gamma, c("shape", "rate", "Ve", "Ut"))
+#fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
+#    all_args <- c("shape", "rate", "Ve", "Ut")
+#    known_args <- c( names(fixed), names(start) )  
+#    if(!all(all_args %in% known_args)){
+#       msg <- paste("Must set fixed or starting value for following params\n",
+#                    all_args[!(all_args %in% known_args )])
+#       stop(msg)
+#    }
+#    lower_bound <- c(shape= 0, rate=0, Ve=0, Ut=0)
+#    Q <- function(shape, rate, Ve, Ut){
+#        if(verbose){
+#            params <- match.call()
+#            print (sapply(as.list(params)[2:5], round, 4))
+#        }
+#        if(any( c(shape, rate, Ve, Ut) <= 0)){
+#           return(999999)
+#        }
+#        -dma_gamma(obs, shape, rate, Ve, Ut,log=TRUE)
+#    }
+#      
+#    mle(Q, start=start, fixed=fixed,
+#        method="L-BFGS-B",
+#        lower=rep(1e-6,length(start)))
+#        
+#}
+#
 #' M.O.M estimate of gamma model with known mutation rate
 #' @param obs, numeric, vector of observed fitnesses
 #' @param Ve, numeric, experimental variance
