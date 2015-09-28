@@ -52,6 +52,7 @@ double dma_IG_one_mutation(double obs, double mean, double shape, double Ve, int
         F.function = &ig_integrand;
         F.params = &p;
         err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
+        gsl_integration_workspace_free( ws );
     }
     if(log){
         return(std::log(convolve));
@@ -147,6 +148,7 @@ double dma_IG(NumericVector obs, double mean, double shape, double Ve, double Ut
         running_prob += mu_prob;
         k += 1;
     }
+    gsl_integration_workspace_free( ws );
     double final_result = 0;
     for(size_t i = 0; i < nobs; ++i){
         final_result += std::log(res[i]);
