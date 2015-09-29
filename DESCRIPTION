@@ -9,6 +9,7 @@ Depends:
     R (>= 3.0)
 Imports: 
     Rcpp,
+    optimx,
     stats4,
     MASS
 LinkingTo: 
