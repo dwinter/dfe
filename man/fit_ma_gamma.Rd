@@ -4,17 +4,17 @@
 \alias{fit_ma_gamma}
 \title{Fit a MA-model with Gamma dfe}
 \usage{
-fit_ma_gamma(obs, fixed = list(), start = list(), verbose = FALSE)
+fit_ma_gamma(obs, start = list(), fixed = list(), verbose = versbose)
 }
 \arguments{
 \item{obs,}{numeric observed fitnesses}
 
-\item{fixed}{a named list containing values for any of the above paramaters,
-that should be fixed during the maximum likelihood estimation}
-
 \item{start}{a named list contaning starting values for any of the above
 paramaters
 Note, all paramaters must be given either a fixed or a starting value}
+
+\item{fixed}{a named list containing values for any of the above paramaters,
+that should be fixed during the maximum likelihood estimation}
 
 \item{verbose,}{boolean, print values at each execution (default TRUE)}
 

@@ -110,25 +110,25 @@ dma_gamma(obs=w, shape=0.003, rate=0.046, Ve=var(ma_control), Ut=0.5)
 The function `fit_ma_gamma` can perform a maximum liklihood search. This
 function wraps the R function `stats4::mle`, which in turn using the base R
 function `optim` to perform the search. We just need to provide a lists of fixed
-and starting values. Let's follow the mlgenomeu example and fix `Ve` and the
-`rate` paramater, and estimate the rest:
+and starting values. Let's follow the mlgenomeu example and fix two paramaters
+(`Ve` and the `shape`)  and estimate the rest:
 
 
 ```{r fit, warning=FALSE}
 fit <- fit_ma_gamma(obs=w, 
-                    fixed=list(rate=0.046, Ve=var(ma_control)),
-                    start=list(Ut=0.5, shape=0.003))
+                    fixed=list(shape=0.003, Ve=var(ma_control)),
+                    start=list(Ut=0.5, rate=0.046))
 fit
 ```
 
 The function throws some warnings, which are the result of the very low number
 we end up estimating. Ignoring the warnings for now, we can see our ML estimates
 of the shape paramater and mutation rate are getitng close to zero. In fact, we
-can show that a model with zero mutations equally as good a fit:
+can show that a model with zero mutations gives approximately as good a fit:
 
 
 ```{r, zero}
-stats4::logLik(fit)
+fit
 dma_gamma(obs=w, shape=0.003, rate=0.046, Ve=var(ma_control), Ut=0)   
 ```
 
