@@ -28,7 +28,7 @@ distribution of mutations takes a Gamma distribution
 }
 \examples{
 k <- rpois(20, 9)
-w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4))
+w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4)
 mean(w)
 }
 

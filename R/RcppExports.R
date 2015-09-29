@@ -41,6 +41,7 @@ dma_gamma <- function(obs, shape, rate, Ve, Ut, log = TRUE) {
 #' @param p_neutral numeric,proportion of all mutations that have no effect
 #' @param log logical return log-liklihood (defaults to true)
 #' @return numeric (log-) liklihood of the specfified model and data
+#' @export
 #' @examples
 #' set.seed(123)
 #' mu <- rpois(50, 10)

@@ -4,7 +4,8 @@
 \alias{estimate_FGM_moments}
 \title{Estimate moments of d.f.e. as defined by fishers geometic model}
 \usage{
-estimate_FGM_moments(n = 1e+05, start, Vm, FUN = sq_dist, plot = FALSE)
+estimate_FGM_moments(n = 10000, start, Vm, FUN = gaussian_fitness,
+  plot = TRUE)
 }
 \arguments{
 \item{n}{numeric number of observations from which to estimate the model}
