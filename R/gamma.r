@@ -71,7 +71,18 @@ rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
 #'@export
 
 
-fit_ma_gamma <-  make_dfe_fitting_fxn(dma_gamma, c("shape", "rate", "Ve", "Ut"))
+fit_ma_gamma <-  make_dfe_fitting_fxn(dma_gamma, 
+                                      c("shape", "rate", "Ve", "Ut"), 
+                                      lower = list(shape=1e-8, rate=1e-8, Ve=1e-8, Ut=0))
+
+
+#' @export
+fit_gamma_known <- make_dfe_fitting_fxn(dma_gamma_known, 
+                                        c("shape", "rate", "Ve", "p_neutral", "k"),
+                                        lower=list(shape=1e-8, rate=1e-8, Ve=1e-8, p_neutral=0),
+                                        upper = list(p_neutral=1.0))
+
+
 #fit_ma_gamma <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 #    all_args <- c("shape", "rate", "Ve", "Ut")
 #    known_args <- c( names(fixed), names(start) )  
