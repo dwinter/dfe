@@ -27,11 +27,12 @@
 
 check_args <- function(required){
     parent_args <- sys.frame(sys.parent())
-    all_args <- c(parent_args$start, parent_args$fixed)
-    if( !all (required %in% names(all_args) )) {
-        msg <- paste("Must set fixed or starting paramater values for",
-                     all_args[!(all_args %in% required)])
-        stop(msg, .call=FALSE)                      
+    all_args <- (c(names(parent_args$start), names(parent_args$fixed)))
+    if( !all (required %in% all_args )) {
+        missing <- paste(required[!(required %in% all_args)])
+        msg <- paste("Must set fixed or starting values for the following parameters:\n", 
+                     paste(missing, collapse=" "))
+        stop(msg, call.=FALSE)                      
     }
 }
 
