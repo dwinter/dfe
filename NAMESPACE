@@ -3,6 +3,7 @@
 export(BM)
 export(dinverse_gaussian)
 export(dma_IG)
+export(dma_IG_known)
 export(dma_gamma)
 export(dma_normal)
 export(estimate_FGM_moments)
