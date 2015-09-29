@@ -15,3 +15,7 @@ test_that( "We can make custom fitting fxns", {
    expect_is(f, "function")
    expect_equal(names(formals(f)), c("obs", "start", "fixed", "verbose"))
 })
+
+test_that("Argument checking works", {
+   expect_error(fit_ma_gamma(obs=0.01))
+})
