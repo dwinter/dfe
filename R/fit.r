@@ -49,8 +49,8 @@ process_constraints <- function(starting_vals, constraint, lower=TRUE){
 
 
 # closures to generating fitting functions
-make_dfe_fitting_fxn <- function(Q, all_params, verbose=TRUE, lower=list(), upper=list(), ...){
-    f <- function(obs, start=list(), fixed=list(), verbose=versbose){
+make_dfe_fitting_fxn <- function(Q, all_params, verbose=TRUE, lower=list(), upper=list()){
+    f <- function(obs, start=list(), fixed=list(), verbose=versbose, ...){
     
         check_args(all_params)
         #Set up the specific fitting function (with fixed values given and (to
@@ -65,16 +65,18 @@ make_dfe_fitting_fxn <- function(Q, all_params, verbose=TRUE, lower=list(), uppe
         upper_bound <- process_constraints(start, upper, lower=FALSE)
                     
         LL <- function(x) -do.call(Q, c(x, Q_args))
-        if(is.null(upper_bound)){
-            if(is.null(lower_bound)){                
-                return( optimx(unlist(start), LL, ...) )
-            }
-            return( optimx(par=unlist(start), fn=LL, lower = lower_bound, method = "L-BFGS-B", ...) )
+        if(is.null(upper_bound) & is.null(lower_bound)){                
+            return( optimx(unlist(start), LL, ...) )
         }
+        LL_args <- c(list(method="L-BFGS-B", par=unlist(start), fn=LL), list(...))
+        
         if(is.null(lower_bound)){
-            return( optimx(unlist(start), fn=LL, upper=upper_bound, method= "L-BFGS-B", ...) )
+            LL_args$lower <- lower_bound
         }
-        optimx(unlist(start), fn=LL, lower=lower_bound, upper=upper_bound, method="L-BFGS-B", ...)
+        if(is.null(upper_bound)){
+            LL_args$upper <- upper_bound
+        }
+        do.call(optimix, LL_args)
     }
     f
 }
