@@ -20,8 +20,8 @@ mom_and_maxamize <- function(w, Ve, k, p_n){
 
 
 
-AIC <- function(ests)  6- 2 *ests[5,]
-ests <- sapply(Ut, mom_and_ll, w=w, Ve=0.001)
+#AIC <- function(ests)  6- 2 *ests[5,]
+#ests <- sapply(Ut, mom_and_ll, w=w, Ve=0.001)
 
 
 
@@ -87,16 +87,22 @@ fit_gamma_known <- make_dfe_fitting_fxn(dma_gamma_known,
                                         upper = list(p_neutral=1.0))
 
     
-
-
-mu <- rpois(100,10)
-
-w <- rma_known_gamma(shape=1, rate=10, Ve=0.01, k=mu, p_neutral=0.6)
-mod <- fit_gamma_known(w, 
-                       fixed=list(Ve=0.01, shape=1, rate=10, k=mu),
-                       start=list(p_neutral = 0.1) )
-                       
-
-
-pn <- seq(0.1, 0.9, 0.05)
-res <- vapply(pn, mom_and_ll, w=w, Ve=0.01, k=mu, FUN.VALUE=rep(0.01,4))
+mom_lik_sim <- function(shape, rate, Ut, pn, n, Ve=0.01){
+    pn_grid <- seq(0, 1, 0.025)
+    mu <- rpois(n,Ut)
+    w <- rma_known_gamma(shape=shape, rate=rate, Ve=Ve, k=mu, p_neutral=pn)
+    res <- vapply(pn_grid, mom_and_ll, w=w, Ve=0.01, k=mu, FUN.VALUE=rep(0.01,4))
+    simmed_pn <- which(pn_grid  == pn)
+    winner <- which.max(res[1,])
+    delta_LL <- unname(res[1,winner] - res[1,simmed_pn])
+    params = as.list(match.call())[-1]
+    unlist(c(params, LL_dif=delta_LL, res[,winner]))
+    
+}
+#
+#mod <- fit_gamma_known(w, 
+#                       fixed=list(Ve=0.01, shape=1, rate=10, k=mu),
+#                       start=list(p_neutral = 0.1) )
+#                       
+#
+#
