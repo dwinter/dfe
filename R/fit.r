@@ -70,13 +70,13 @@ make_dfe_fitting_fxn <- function(Q, all_params, verbose=TRUE, lower=list(), uppe
         }
         LL_args <- c(list(method="L-BFGS-B", par=unlist(start), fn=LL), list(...))
         
-        if(is.null(lower_bound)){
+        if(!is.null(lower_bound)){
             LL_args$lower <- lower_bound
         }
-        if(is.null(upper_bound)){
+        if(!is.null(upper_bound)){
             LL_args$upper <- upper_bound
         }
-        do.call(optimix, LL_args)
+        do.call(optimx, LL_args)
     }
     f
 }
