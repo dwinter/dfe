@@ -44,7 +44,7 @@ double dma_gamma_one_mutation(double obs, double shape, double rate, double Ve, 
         F.params = &p;
         err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
         if(err_code){
-            Rf_warning("GSL intergration returned error %d processcing value '%d'", err_code, obs);
+            Rf_warning("GSL intergration returned error %d processcing value '%.4f'", err_code, obs);
             return std::numeric_limits<double>::quiet_NaN();
 
         }

@@ -5,8 +5,8 @@ author: "David winter"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{dfe introduction}
+  %\VignetteEngine{rmarkdown::render}
   \usepackage[utf8]{inputenc}
 ---
 

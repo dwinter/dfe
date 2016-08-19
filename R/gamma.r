@@ -1,11 +1,10 @@
-
-
 #' Simulate fitness effects under of Gamma model 
 #'
 #' This function simulates fitness effects under a model in which the fitness
 #' distribution of mutations takes a Gamma distribution
 #'
 #'@export
+#'@importFrom stats dpois
 #'@param n numeric, number of lines to simulate
 #'@param shape numeric,  shape parameter for Gamma
 #'@param rate numeric, Scale paramater for Gamma
@@ -32,15 +31,16 @@ rma_gamma <- function(n, shape,rate, Ve, Ut){
 #' distribution of mutations takes a Gamma distribution
 #'
 #'@export
+#'@importFrom stats rnorm rgamma median var rpois rbinom runif
 #'@param n numeric, number of lines to simulate
 #'@param shape numeric,  shape parameter for Gamma
 #'@param rate numeric, Scale paramater for Gamma
 #'@param Ve numeric, envrionmental variance 
 #'@param k integer, total number of mutations in each line
-#'@param p_neutral
+#'@param p_neutral, proportion of mutations with no fitness effect
 #'@return w, numeric simulate fitness of each line
 #'@examples
-#' k <- rpois(20, 9)
+#' k <- stats::rpois(20, 9)
 #' w<- rma_known_gamma(shape=1, rate=20, Ve=0.01, k=k, p_neutral=0.4)
 #' mean(w)
 
@@ -55,10 +55,12 @@ rma_known_gamma <- function(shape, rate, Ve, k, p_neutral){
 
 
 
+# TODO
+#Will have to over-write usage section for these
+#
 #' Fit a MA-model with Gamma dfe
 #' @importFrom optimx optimx
 #' @param obs, numeric observed fitnesses
-#' @param verbose, boolean, print values at each execution (default TRUE)
 #' @param shape numeric,  shape parameter for Gamma
 #' @param rate numeric, Scale paramater for Gamma
 #' @param Ve numeric, envrionmental variance 
