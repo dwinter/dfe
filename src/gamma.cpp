@@ -44,9 +44,23 @@ double dma_gamma_one_mutation(double obs, double shape, double rate, double Ve, 
         F.params = &p;
         err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
         if(err_code){
-            Rf_warning("GSL intergration returned error %d processcing value '%.4f'", err_code, obs);
-            return std::numeric_limits<double>::quiet_NaN();
-
+            //Sometime the integral looks divergent when it's mapped on to the
+            //infinite interval... will it bave in 'normal' space?
+            if(err_code == 22) {
+                Rf_warning("Numerical Integration on infinite interval failed");
+                err_code = gsl_integration_qag(&F, 0., 200., 1e-7, 1e-7, 10000, GSL_INTEG_GAUSS31, ws, &convolve, &int_error);
+                if(err_code){  
+                    Rf_warning("GSL intergration returned error %d processcing value '%.4f'", err_code, obs);
+                    gsl_integration_workspace_free( ws );
+                    return std::numeric_limits<double>::quiet_NaN();
+                }
+                
+            }
+            else {
+                Rf_warning("GSL intergration returned error %d processcing value '%.4f'", err_code, obs);
+                gsl_integration_workspace_free( ws );
+                return std::numeric_limits<double>::quiet_NaN();
+            }
         }
         gsl_integration_workspace_free( ws );
     }
