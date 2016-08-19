@@ -116,11 +116,18 @@ fit_gamma_known <- make_dfe_fitting_fxn(dma_gamma_known,
 #' @param Ve, numeric, experimental variance
 #' @param Ut, numeric, mutation rate
 #' @export
-mom_ma_gamma <-function(obs, Ve, Ut){
+mom_ma_gamma <-function(obs, Ve, Ut, likelihood=FALSE){
     first <- mean(obs)
     second <- var(obs)
     denom <- first**2 - Ut * second   + Ut *Ve
-    -(c(shape= first**2 / denom, rate=first*Ut/denom))
+    res <- -(c(shape= first**2 / denom, rate=first*Ut/denom))
+    if(likelihood){
+        if(any(res < 0)){
+            res <- c(res, likelihood=NaN)
+        }
+        else res <- c(res, likelihood=dma_gamma(w, shape=res[1], res[2], Ve, Ut))
+    }
+    res
 }
 
 

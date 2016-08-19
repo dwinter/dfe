@@ -41,9 +41,17 @@ rma_known_IG <- function(mean, shape, Ve, k, p_neutral){
 mom_ma_IG <- function(w, Ve, Ut){
     first <- mean(w)
     second <- var(w) - Ve
-    c(mean  = first/Ut, 
+    res <- c(
+      mean  = first/Ut, 
       shape = first^3 / (Ut * (Ut*second-first^2)) 
     )
+    if(likelihood){
+        if(any(res < 0)){
+            res <- c(res, likelihood=NaN)
+        }
+        else res <- c(res, likelihood=dma_gamma(w, shape=res[1], res[2], Ve, Ut))
+    }
+    res
 }
 
 #'@export

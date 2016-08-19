@@ -73,7 +73,14 @@ mom_ma_normal <- function(obs, Ve, Ut=NULL){
                    Ut = (first * A + 3 * second * first) / (2 * third) )
         )
     }
-    c(a = first/Ut, Va= (Ut * second - first^2)/Ut^2)
+    res <- c(a = first/Ut, Va= (Ut * second - first^2)/Ut^2)
+    if(likelihood){
+        if(any(res < 0)){
+            res <- c(res, likelihood=NaN)
+        }
+      else res <- c(res, likelihood=dma_gamma(w, shape=res[1], res[2], Ve, Ut))
+     }
+    res
 }
 
 
