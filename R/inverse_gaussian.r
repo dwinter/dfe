@@ -47,29 +47,16 @@ mom_ma_IG <- function(w, Ve, Ut){
 }
 
 #'@export
-fit_ma_IG <- function(obs, fixed=list(), start=list(), verbose=FALSE){
-    all_args <- list("mean", "shape", "Ve","Ut")
-    known_args <- c(names(fixed), names(start))
-    if(!all(all_args %in% known_args)){
-        stop("Specify all the args yo")
-    }
-    Q <- function(mean, shape, Ve, Ut){
-        if(any( c(shape, mean, Ve, Ut) <= 0)){
-           return(999999)
-        }
-        res <- -dma_IG(obs, mean, shape, Ve, Ut,log=TRUE)
-        if(verbose){
-            params <- match.call()
-            print (sapply(c(as.list(params)[2:5],res), round, 4))
-        }
-        res
-    }
-      
-    mle(Q, start=start, fixed=fixed,
-        method="L-BFGS-B",
-        lower=rep(1e-6,length(start)))
-        
-}
+fit_ma_IG <- make_dfe_fitting_fxn(dma_IG, 
+                                  c("shape", "mean", "Ve", "Ut"),
+                                  lower=list(mean=1e-8, rate=1e-8, Ve=1e-8, Ut=0))
+
+
+#'@export
+fit_IG_known <- make_dfe_fitting_fxn(dma_IG_known, 
+                                        c("shape", "mean", "Ve", "p_neutral", "k"),
+                                        lower=list(mean=1e-8, rate=1e-8, Ve=1e-8, p_neutral=0),
+                                        upper = list(p_neutral=1.0))
 
 
 #NIG_convolution <- function(z, mean, shape, Ve, k, verbose=FALSE){
@@ -85,4 +72,3 @@ fit_ma_IG <- function(obs, fixed=list(), start=list(), verbose=FALSE){
 #    }
 #    res$value
 #}
-

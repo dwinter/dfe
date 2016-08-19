@@ -43,6 +43,11 @@ double dma_gamma_one_mutation(double obs, double shape, double rate, double Ve, 
         F.function = &integrand;
         F.params = &p;
         err_code = gsl_integration_qagiu(&F, 0., 1e-7, 1e-7, 10000, ws, &convolve, &int_error);
+        if(err_code){
+            Rf_warning("GSL intergration returned error %d processcing value '%.4f'", err_code, obs);
+            return std::numeric_limits<double>::quiet_NaN();
+
+        }
         gsl_integration_workspace_free( ws );
     }
     if(log){
@@ -70,6 +75,7 @@ double dma_gamma_one_mutation(double obs, double shape, double rate, double Ve, 
 // [[Rcpp::export]]
 
 double dma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, Rcpp::IntegerVector k, double p_neutral, bool log = true){
+    gsl_set_error_handler_off ();
     double lik = 0;
     if(p_neutral == 0.0){
         for(size_t i = 0; i < obs.size(); i++){
@@ -125,7 +131,7 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
     double result;
     double error;
     gsl_integration_workspace* ws = gsl_integration_workspace_alloc(10000);
-    while (running_prob < 0.999){
+    while (running_prob < 0.99999){
         kfac *= k;
         double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
         for(size_t i = 0; i < nobs; ++i){
@@ -133,7 +139,7 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
             err = gsl_integration_qagiu(&f_ptrs[i], 0., 1e-7, 1e-7, 10000, ws, &result, &error);
             res[i] += result * mu_prob;
             if(err){
-                Rf_warning("GSL intergration returned error %d", err);
+                Rf_warning("GSL intergration returned error %d processing value '%d'", err, obs[i]);
                 return std::numeric_limits<double>::quiet_NaN();
 //                std::cout << err << std::endl;
             }
