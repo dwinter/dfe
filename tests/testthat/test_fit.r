@@ -13,9 +13,11 @@ test_that("We can generate box constrainsts", {
 test_that( "We can make custom fitting fxns", {
    f <- make_dfe_fitting_fxn(dma_gamma, c("shape", "rate", "Ve", "Ut"))
    expect_is(f, "function")
-   expect_equal(names(formals(f)), c("obs", "start", "fixed", "verbose"))
+   expect_equal( names(formals(f)), c("obs", "start", "fixed", "verbose", "...") )
 })
 
 test_that("Argument checking works", {
    expect_error(fit_ma_gamma(obs=0.01))
+   expect_error(fit_ma_gamma(c(0,0.01), start=list(shape=0.1, rate=10), fixed=list(Ve=0.01)))
+   expect_error(fit_ma_gamma(c(0,0.01), start=list(shape=0.1), fixed=list(Ve=0.01, Ut=10)))
 })
