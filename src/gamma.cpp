@@ -89,11 +89,18 @@ double dma_gamma_one_mutation(double obs, double shape, double rate, double Ve, 
 // [[Rcpp::export]]
 
 double dma_gamma_known(std::vector<double> obs, double shape, double rate, double Ve, Rcpp::IntegerVector k, double p_neutral, bool log = true){
+    if( k.size() != obs.size()) {
+        Rf_error("Vector of mutation counts (k) should be same size as fitness values(obs)");
+    }
     gsl_set_error_handler_off ();
     double lik = 0;
     if(p_neutral == 0.0){
         for(size_t i = 0; i < obs.size(); i++){
             lik += dma_gamma_one_mutation(obs[i], shape, rate, Ve, k[i], true);
+        }
+    } else if(p_neutral == 1.0) {
+        for(size_t i = 0; i < obs.size(); i++){
+            lik += dma_gamma_one_mutation(obs[i], shape, rate, Ve, 0, true);
         }
     } else {
         ProbMap mu_probs = cache_mutation_probs(k, p_neutral);
