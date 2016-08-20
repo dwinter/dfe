@@ -47,7 +47,7 @@ double dma_gamma_one_mutation(double obs, double shape, double rate, double Ve, 
             //Sometime the integral looks divergent when it's mapped on to the
             //infinite interval... will it bave in 'normal' space?
             if(err_code == 22) {
-                Rf_warning("Numerical Integration on infinite interval failed");
+                Rf_warning("Numerical Integration appears divergent on infinite interval, attempting intergaron from 0->200.0");
                 err_code = gsl_integration_qag(&F, 0., 200., 1e-7, 1e-7, 10000, GSL_INTEG_GAUSS31, ws, &convolve, &int_error);
                 if(err_code){  
                     Rf_warning("GSL intergration returned error %d processcing value '%.4f'", err_code, obs);

@@ -64,7 +64,18 @@ make_dfe_fitting_fxn <- function(Q, all_params, verbose=TRUE, lower=list(), uppe
         lower_bound <- process_constraints(start, lower, lower=TRUE)
         upper_bound <- process_constraints(start, upper, lower=FALSE)
                     
-        LL <- function(x) -do.call(Q, c(x, Q_args))
+        LL <- function(x) {            
+            res <- -do.call(Q, c(x, Q_args))
+            if (is.nan(res)){
+                return( .Machine$double.xmax )
+            }
+            if (is.infite(res)){
+                .dfe_bad_obs <<- x
+                .dfe_bad_args <<- Q_args
+                return (.Machine$double.xmax )
+            }
+            res
+        }
         if(is.null(upper_bound) & is.null(lower_bound)){                
             return( optimx(unlist(start), LL, ...) )
         }
