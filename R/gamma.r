@@ -125,7 +125,7 @@ mom_ma_gamma <-function(obs, Ve, Ut, likelihood=FALSE){
         if(any(res < 0)){
             res <- c(res, likelihood=NaN)
         }
-        else res <- c(res, likelihood=dma_gamma(w, shape=res[1], res[2], Ve, Ut))
+        else res <- c(res, likelihood=dma_gamma(obs, shape=res[1], res[2], Ve, Ut))
     }
     res
 }

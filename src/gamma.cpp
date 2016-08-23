@@ -157,6 +157,7 @@ double dma_gamma(std::vector<double> obs, double shape, double rate, double Ve, 
         double mu_prob = (exp(-Ut) * pow(Ut,k)) /kfac;
         for(size_t i = 0; i < nobs; ++i){
             int err = 0;
+        //    std::cerr << "w = " << obs[i] << std::endl;
             err = gsl_integration_qagiu(&f_ptrs[i], 0., 1e-7, 1e-7, 10000, ws, &result, &error);
             res[i] += result * mu_prob;
             if(err){
